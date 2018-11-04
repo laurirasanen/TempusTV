@@ -125,12 +125,14 @@ function startDemo(index)
     // Create a ttv_spec_player.cfg, which will get executed when the demo loads
     // The config just contains a 'spec_player "STEAMID"' command.
     // This cannot be done via rcon because the steamid needs quotes around it source does not like nested quotes that.
+
+    // Check for old steamids (vice)
     var steamid = demos[index].player_info.steamid;
     for (var i = 0; i < old_steamids.length; i++)
     {
         if (old_steamids[i].current === demos[index].player_info.steamid && demos[index].demo_info.date < old_steamids[i].date)
         {
-            steamid = old_steamids.old;
+            steamid = old_steamids[i].old;
         }
     }
 
