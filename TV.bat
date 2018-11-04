@@ -1,10 +1,8 @@
-@echo off
-
-cd \d "..\DemoTools"
+cd /d "..\DemoTools"
 git pull
 call npm i
 
-cd \d "..\TempusTV"
+cd /d "..\TempusTV"
 git pull
 call npm i
 
