@@ -12,92 +12,92 @@
 
 var restarting = false;
 
-config.loadCfg((err, cfg) =>
-{
-    if (err) return;
-    console.log(cfg.rcon.address + ':' + cfg.rcon.port + ':' + cfg.rcon.password);
-    conn = new rcon(cfg.rcon.address, cfg.rcon.port, cfg.rcon.password);
-});
-
 function init()
 {
-    conn.on('auth', () =>
+    config.loadCfg((err, cfg) =>
     {
-        log.printLn('[RCON] Authenticated!', log.severity.INFO);
-        conn.send('disconnect; exec cinema; volume 0; rcon_address 127.0.0.1:3002');
-        active = true;
-        if (restarting)
-        {
-            restarting = false;
-            demo.playDemo(currentDemo);
-        }
+        if (err) return;
+        console.log(cfg.rcon.address + ':' + cfg.rcon.port + ':' + cfg.rcon.password);
+        conn = new rcon(cfg.rcon.address, cfg.rcon.port, cfg.rcon.password);
 
-    }).on('response', (str) =>
-    {
-        if (str.length === 0)
+        conn.on('auth', () =>
         {
-            // For some reason auth doesn't get called again when restarting TF2 so start playback here after restart
+            log.printLn('[RCON] Authenticated!', log.severity.INFO);
+            conn.send('disconnect; exec cinema; volume 0; rcon_address 127.0.0.1:3002');
+            active = true;
             if (restarting)
             {
-                log.printLn('[RCON] Authenticated!', log.severity.INFO);
-                conn.send('disconnect; exec cinema; volume 0; rcon_address 127.0.0.1:3002');
-                active = true;
                 restarting = false;
                 demo.playDemo(currentDemo);
             }
 
-            log.printLn('[RCON] Received empty response', log.severity.DEBUG);
-            return;
-        }
-        log.printLn('[RCON] Received response: ' + str, log.severity.DEBUG);
-
-    }).on('end', () =>
-    {
-        log.printLn('[RCON] Socket closed!', log.severity.INFO);
-        active = false;
-
-    }).on('error', (err) =>
-    {
-        active = false;
-        if (err.code === 'ECONNREFUSED')
+        }).on('response', (str) =>
         {
-            log.printLn(`[RCON] Could not connect to ${conn.host}:${conn.port}!`, log.severity.WARN);
-            setTimeout(() =>
+            if (str.length === 0)
             {
-                conn.connect();
-            }, 5000);
-        }
-        else if (err.code === 'ECONNRESET')
-        {
-            log.printLn('[RCON] Connection reset!', log.severity.ERROR);
+                // For some reason auth doesn't get called again when restarting TF2 so start playback here after restart
+                if (restarting)
+                {
+                    log.printLn('[RCON] Authenticated!', log.severity.INFO);
+                    conn.send('disconnect; exec cinema; volume 0; rcon_address 127.0.0.1:3002');
+                    active = true;
+                    restarting = false;
+                    demo.playDemo(currentDemo);
+                }
 
-            restartTF2();
-        }
-        else if (err.code === 'EPIPE')
-        {
-            log.printLn('[RCON] Socket closed by other party!', log.severity.ERROR);
+                log.printLn('[RCON] Received empty response', log.severity.DEBUG);
+                return;
+            }
+            log.printLn('[RCON] Received response: ' + str, log.severity.DEBUG);
 
-            restartTF2();
-        }
-        else
+        }).on('end', () =>
         {
-            log.printLn('[RCON] Encountered unhandled error!', log.severity.ERROR);
-            log.printLnNoStamp(err);
+            log.printLn('[RCON] Socket closed!', log.severity.INFO);
+            active = false;
 
-            restartTF2();
-        }
+        }).on('error', (err) =>
+        {
+            active = false;
+            if (err.code === 'ECONNREFUSED')
+            {
+                log.printLn(`[RCON] Could not connect to ${conn.host}:${conn.port}!`, log.severity.WARN);
+                setTimeout(() =>
+                {
+                    conn.connect();
+                }, 5000);
+            }
+            else if (err.code === 'ECONNRESET')
+            {
+                log.printLn('[RCON] Connection reset!', log.severity.ERROR);
+
+                restartTF2();
+            }
+            else if (err.code === 'EPIPE')
+            {
+                log.printLn('[RCON] Socket closed by other party!', log.severity.ERROR);
+
+                restartTF2();
+            }
+            else
+            {
+                log.printLn('[RCON] Encountered unhandled error!', log.severity.ERROR);
+                log.printLnNoStamp(err);
+
+                restartTF2();
+            }
         });
-    try
-    {
-        conn.connect();
-    }
-    catch (err)
-    {
-        log.printLn('[RCON] Socket closed!', log.severity.ERROR);
-        log.printLnNoStamp(err, log.severity.DEBUG)
+        try
+        {
+            conn.connect();
+        }
+        catch (err)
+        {
+            log.printLn('[RCON] Socket closed!', log.severity.ERROR);
+            log.printLnNoStamp(err, log.severity.DEBUG)
 
-        restartTF2();
-    }
+            restartTF2();
+        }
+    });
 }
 
 // Restart tf2 if rcon socket encounters an error.

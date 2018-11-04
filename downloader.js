@@ -49,8 +49,10 @@ function getDemoFile(index, cb)
 
             var stream = fs.createWriteStream(dest);
 
-            download(demos[index].demo_info.url, false, (resp) =>
+            download(demos[index].demo_info.url, false, currentDemo, (resp, demo) =>
             {
+                if (demo !== currentDemo)
+                    return;
                 resp.pipe(unzip.Parse())
                     .on('entry', (entry) =>
                     {
@@ -151,8 +153,11 @@ function getMap(mapName, cb)
 
             var mapUrl = `http://tempus.site.nfoservers.com/server/maps/${mapName}.bsp.bz2`;
 
-            download(mapUrl, true, (resp) =>
+            download(mapUrl, true, currentDemo, (resp, demo) =>
             {                
+                if (demo !== currentDemo)
+                    return;
+
                 resp.pipe(bz2()
                     .on('error', (err) =>
                     {
@@ -182,7 +187,7 @@ function getMap(mapName, cb)
     });
 }
 
-function download(url, map, callback)
+function download(url, map, demo, callback)
 {
     var request = http.get(url, function (response)
     {
@@ -196,14 +201,21 @@ function download(url, map, callback)
         {
             data += chunk;
             cur += chunk.length;
-            // only update every %
-            if ((100.0 * cur / len).toFixed(0) != lastP)
+            // FIXME / HACK:
+            // demo can get skipped when it fails to download,
+            // but still start the download again.
+            // this will cause the download status to be visible while the next demo is playing
+            if (demo === currentDemo)
             {
-                if (map)
-                    overlay.drawLoadingStatus('Downloading map from tempus<br/>Progress: ' + (100.0 * cur / len).toFixed(0) + "% (" + (cur / 1048576).toFixed(2) + "/" + total.toFixed(0) + " MB)");
-                else
-                    overlay.drawLoadingStatus('Downloading demo from tempus<br/>Progress: ' + (100.0 * cur / len).toFixed(0) + "% (" + (cur / 1048576).toFixed(2) + "/" + total.toFixed(0) + " MB)");
-                lastP = (100.0 * cur / len).toFixed(0);
+                // only update every %
+                if ((100.0 * cur / len).toFixed(0) != lastP)
+                {
+                    if (map)
+                        overlay.drawLoadingStatus('Downloading map from tempus<br/>Progress: ' + (100.0 * cur / len).toFixed(0) + "% (" + (cur / 1048576).toFixed(2) + "/" + total.toFixed(0) + " MB)");
+                    else
+                        overlay.drawLoadingStatus('Downloading demo from tempus<br/>Progress: ' + (100.0 * cur / len).toFixed(0) + "% (" + (cur / 1048576).toFixed(2) + "/" + total.toFixed(0) + " MB)");
+                    lastP = (100.0 * cur / len).toFixed(0);
+                }
             }
         });
 
@@ -213,7 +225,7 @@ function download(url, map, callback)
             log.printLnNoStamp(e.message);
         });
 
-        callback(response);
+        callback(response, demo);
     });
 };
 
