@@ -322,22 +322,25 @@ function getDemos(refresh = false)
                                 }
                             }
 
-                            // Are we doing an initial load or refreshing runs?
-                            // TODO: Monitor activity instead of refreshing runs every x minutes
-                            if (refresh)
+                            if (record.demo_info.url && record.demo_info.url.length > 0)
                             {
-                                tempDemos.push(record);
-                            }
-                            else
-                            {
-                                demos.push(record);
-
-                                // TODO: Figure out less spammy way of printing progress
-                                if (demos.length > 940)
-                                    log.printLnNoStamp(`[TEMPUS] Loaded ${demos.length} records!`, log.severity.DEBUG);
+                                // Are we doing an initial load or refreshing runs?
+                                // TODO: Monitor activity instead of refreshing runs every x minutes
+                                if (refresh)
+                                {
+                                    tempDemos.push(record);
+                                }
                                 else
-                                    if (demos.length % 100 == 0)
+                                {
+                                    demos.push(record);
+
+                                    // TODO: Figure out less spammy way of printing progress
+                                    if (demos.length > 940)
                                         log.printLnNoStamp(`[TEMPUS] Loaded ${demos.length} records!`, log.severity.DEBUG);
+                                    else
+                                        if (demos.length % 100 == 0)
+                                            log.printLnNoStamp(`[TEMPUS] Loaded ${demos.length} records!`, log.severity.DEBUG);
+                                }
                             }
                         })
                             .catch((err) =>

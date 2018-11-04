@@ -231,6 +231,12 @@ function download(url, map, demo, callback)
             log.printLnNoStamp(e.message);
         });
 
+        response.on("error", function (e)
+        {
+            log.printLn('[DL] Error downloading', log.severity.ERROR);
+            log.printLnNoStamp(e.message);
+        });
+
         callback(response, demo);
     });
 };
