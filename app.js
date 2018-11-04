@@ -134,7 +134,7 @@ function refresh()
                 demos.push(tempDemos[0]);
                 tempDemos.splice(0, 1);
                 if (twitch.instance())
-                    twitch.instance().say(`New run added: '${demos[demos.length].player_info.name} on ${demos[demos.length].demo_info.mapname} as ${demos[demos.length].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[demos.length].record_info.duration * 1000)})'!`);
+                    twitch.instance().say(`New run added: '${demos[demos.length - 1].player_info.name} on ${demos[demos.length - 1].demo_info.mapname} as ${demos[demos.length - 1].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[demos.length - 1].record_info.duration * 1000)})'!`);
             }
         }
     }, 60 * 1000);
