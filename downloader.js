@@ -62,6 +62,12 @@ function getDemoFile(index, cb)
                             stream.close(() =>
                             {
                                 log.printLn(`[DL] Downloaded demo ${demos[index].demo_info.filename}`, log.severity.DEBUG);
+
+                                // sanity check
+                                // the app crashed due to map_info being undefined on un gatos jump_heaven wr for some reason
+                                if (!demos[index].map_info)
+                                    return cb(null);
+
                                 // jungle inferno date 2017-10-16
                                 // boshy and kaptain are pretty much only people with original wrs before jungle inferno
                                 // un gato has cheval wr with mangler
