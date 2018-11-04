@@ -351,7 +351,7 @@ function defineBotEvents(Bot)
             {
                 name += (i <= 2 ? parts[i] : ` ${parts[i]}`);
             }
-            config.saveNick(steamid, name, chatter.username, (res) =>
+            config.saveNick(steamid, name, chatter.username, (res, moderator) =>
             {
                 if (res)
                     Bot.say(`@${moderator} Nickname saved!`);

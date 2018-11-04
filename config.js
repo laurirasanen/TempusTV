@@ -61,12 +61,12 @@ function saveNick(steamid, name, moderator = '', cb)
             {
                 log.printLn('[CONFIG] Error writing nicks', log.severity.ERROR);
                 log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
-                return cb(false);
+                return cb(false, moderator);
             }
             else
             {
                 log.printLn('[CONFIG] Nicknames saved', log.severity.DEBUG);
-                return cb(true);
+                return cb(true, moderator);
             }                
         });      
     });
