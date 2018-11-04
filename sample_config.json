@@ -1,0 +1,62 @@
+{
+	"twitch":{
+		"enable": false,
+		"username": "BotMcBotty",
+		"oauth": "oauth:xxxx",
+		"channels": [
+			"tempusrecords"
+		]
+	},
+	"obs":{
+		"path": "\"C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe\"",
+		"autoLaunch": false,
+		"autoStart":{
+			"streaming": false,
+			"recording": false
+		}
+	},
+	"overlay":
+	{
+		"address": "127.0.0.1",
+		"port": 3000
+	},
+	"rcon":{
+		"listenAddress": "127.0.0.1",
+		"listenPort": 3002,
+		"address": "127.0.0.1",
+		"port": 27015,
+		"password": "password"
+	},
+	"tf2":{
+		"tfPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\",
+		"launchOptions":[
+			"-novid",
+			"-high",
+			"-autoconfig",
+			"-dxlevel 98",
+			"-windowed",
+			"-noborder",
+			"-hijack",
+			"-nocrashdialog",
+			"-w 1920",
+			"-h 1080",
+			"+exec cinema",
+			"+ip 127.0.0.1",
+			"-usercon",
+			"rcon_password password",
+			"+map itemtest"			
+		]
+	},
+	"steam":
+	{
+		"path": "\"C:\\Program Files (x86)\\Steam\\Steam.exe\"",
+		"game": 440
+	},
+	"tv":{
+		"autoLoad": true,
+		"autoStart": true
+	},
+	"log":{
+		"severity": 2
+	}
+}

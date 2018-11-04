@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto" rel="stylesheet">
+
+    <style>
+        html, body {
+            z-index: -3;
+            height: 100%;
+        }
+        body {
+            background-color: transparent;
+            margin: 0;
+            overflow: hidden;
+        }
+        .background-color-visible {
+            z-index: -2;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: black;
+            height: 100%;
+            width: 100%;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 1s linear;
+        }
+        .background-color-hidden {
+            z-index: -2;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: black;
+            height: 100%;
+            width: 100%;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+        .background-image-visible {
+            z-index: -1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-image: url('/public/media/uberchain_baby_steps.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100%;
+            width: 100%;
+            /*-webkit-filter: blur(1px);
+            -moz-filter: blur(1px);
+            -o-filter: blur(1px);
+            -ms-filter: blur(1px);
+            filter: blur(1px);*/
+            transform: scale(1.05);
+            visibility: visible;
+            opacity: 0.6;
+            transition: opacity 1s linear;
+        }
+        .background-image-hidden {
+            z-index: -1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-image: url('/public/media/uberchain_baby_steps.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100%;
+            width: 100%;
+            /*
+            -webkit-filter: blur(1px);
+            -moz-filter: blur(1px);
+            -o-filter: blur(1px);
+            -ms-filter: blur(1px);
+            filter: blur(1px);*/
+            transform: scale(1.05);
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+
+        h1, h2 {
+            color: white;
+            margin: 0;
+        }
+        .loading-visible {
+            z-index: 0;
+            position: relative;
+            margin: auto;
+            max-width: 90%;
+            font-family: 'Roboto', sans-serif;
+            font-size: 6em;
+            visibility: visible;
+            opacity: 0.8;
+            transition: opacity 1s linear;
+        }
+        .loading-hidden {
+            z-index: 0;
+            position: relative;
+            margin: auto;
+            max-width: 90%;
+            font-family: 'Roboto', sans-serif;
+            font-size: 6em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+        .error-visible {
+            z-index: 0;
+            position: relative;
+            color: #ff4242;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4em;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 1s linear;
+        }
+
+        .error-hidden {
+            z-index: 0;
+            position: relative;
+            color: #ff4242;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+        .loading-status-visible {
+            z-index: 0;
+            position: relative;
+            margin-left: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+            visibility: visible;
+            opacity: 0.8;
+            transition: opacity 1s linear;
+        }
+
+        .loading-status-hidden {
+            z-index: 0;
+            position: relative;
+            margin-left: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 1s, opacity 1s linear;
+        }
+
+        .timer-visible {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 0;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 6em;
+            visibility: visible;
+            opacity: 0.8;
+            transition: opacity 1s linear;
+        }
+
+        .timer-hidden {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 0;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 6em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.5s, opacity 0.5s linear;
+        }
+        .center {
+            z-index: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .demo_info-visible {
+            z-index: 0;
+            font-family: 'Montserrat', sans-serif;
+            vertical-align: text-bottom;
+            font-size: 2em;
+            visibility: visible;
+            opacity: 0.8;
+            transition: opacity 1s linear;
+        }
+        .demo_info-hidden {
+            z-index: 0;
+            font-family: 'Montserrat', sans-serif;
+            vertical-align: text-bottom;
+            font-size: 2em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+        .art-visible {
+            z-index: 0;
+            font-family: 'Montserrat', sans-serif;
+            vertical-align: text-top;
+            font-size: 2em;
+            visibility: visible;
+            opacity: 0.8;
+            transition: opacity 1s linear;
+        }
+
+        .art-hidden {
+            z-index: 0;
+            font-family: 'Montserrat', sans-serif;
+            vertical-align: text-top;
+            font-size: 2em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+        .votes-visible {
+            z-index: 0;
+            font-family: 'Montserrat', sans-serif;
+            vertical-align: text-bottom;
+            font-size: 2em;
+            visibility: visible;
+            opacity: 0.8;
+            transition: opacity 2s linear;
+        }
+
+        .votes-hidden {
+            z-index: 0;
+            font-family: 'Montserrat', sans-serif;
+            vertical-align: text-bottom;
+            font-size: 2em;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
+
+        #wrapper {
+            z-index: 0;
+            left: 0px;
+            top: 300px;
+            position: absolute;
+        }
+        #loading-status-holder {
+            z-index: 0;
+            left: 3px;
+            top: 500px;
+            position: absolute;
+        }
+        #error-holder {
+            z-index: 0;
+            right: 0px;
+            top: 300px;
+            position: absolute;
+        }
+        #bottom-left {
+            z-index: 0;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+        #top-right {
+            z-index: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+        #bottom-right {
+            z-index: 0;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="center"><h1 id="timer"></h1></div>
+
+    <div id="wrapper">
+        <h1 id="loading"></h1>
+    </div>
+
+    <div id="loading-status-holder">
+        <h1 id="loading-status"></h1>
+    </div>
+    <div id="top-right">
+        <h2 id="art-credit">Art by uberchain</h2>
+    </div>
+    <div id="error-holder">
+        <h1 id="error"></h1>
+    </div>
+
+    <div id="bottom-left">
+        <h2 id="demo_info"></h2>
+    </div>
+
+    <div id="bottom-right">
+        <h2 id="votes"></h2>
+    </div>
+
+    <div id="background-color"></div>
+    <div id="background-image"></div>
+
+    <script>
+        var loadingScreens = [
+            '/public/media/dog.jpg',
+            '/public/media/uberchain_baby_steps.png',
+            '/public/media/dog1.jpg',
+            '/public/media/uberchain_banana_bay.png',
+            '/public/media/dog2.jpg',
+            '/public/media/uberchain_canada.png',
+            '/public/media/dog3.jpg',
+            '/public/media/uberchain_do_not_forget.png',
+            '/public/media/dog4.jpg',
+            '/public/media/uberchain_live_in_her_shadow.png',
+            '/public/media/dog5.jpg',
+            '/public/media/uberchain_the_showdown.png',
+            '/public/media/dog6.jpg',
+            '/public/media/uberchain_fifty.png',
+            '/public/media/dog7.jpg',
+            '/public/media/uberchain_tryhard.png',
+            '/public/media/dog8.jpg',
+            '/public/media/uberchain_z2.png',
+            '/public/media/dog9.jpg',
+            '/public/media/uberchain_consolation_final.png',
+            '/public/media/dog10.jpg',
+            '/public/media/uberchain_summer_season.jpg',
+            '/public/media/dog11.jpg',
+            '/public/media/uberchain_sober_strategies.jpg',
+            '/public/media/dog12.jpg',
+            '/public/media/dog13.jpg'
+        ];
+
+        var loadingScreenIndex = 0;
+
+        var currentError = 0;
+        var socket = io.connect('localhost:3000');
+        socket.on('connect', () =>
+        {
+            $('#background-image').attr('class', 'background-image-visible');
+            $('#background-color').attr('class', 'background-color-visible');
+            $('#art-credit').attr('class', 'art-hidden');
+            $('#loading').html('Loading..');
+            $('#loading').attr('class', 'loading-visible');
+            $('#timer').attr('class', 'timer-hidden');
+            $('#votes').attr('class', 'votes-hidden');
+            $('#demo_info').attr('class', 'demo_info-hidden');
+            $('#error').attr('class', 'error-hidden');
+        });
+        socket.on('setLoadingStatus', (data) =>
+        {
+            if (data.status)
+            {
+                $('#loading-status').html(data.status);
+                $('#loading-status').attr('class', 'loading-status-visible');
+            }
+            else
+            {
+                $('#loading-status').attr('class', 'loading-status-hidden');
+            }               
+        });
+        socket.on('setError', (data) =>
+        {
+            if (data.error_string)
+                $('#error').html(data.error_string);
+            else
+                $('#error').html('Encountered unhandled errror!');
+
+            currentError++;
+
+            $('#error').attr('class', 'error-visible');
+            setTimeout((cErr) =>
+            {
+                if (cErr != currentError)
+                    return;
+                $('#error').attr('class', 'error-hidden');
+            }, 6000, currentError);
+        });
+        socket.on('setTimer', function (data)
+        {
+            if (data.loading)
+            {
+                $('.background-image-visible').css('background-image', `url(${loadingScreens[loadingScreenIndex]})`);
+                $('.background-image-hidden').css('background-image', `url(${loadingScreens[loadingScreenIndex]})`);
+                if (loadingScreens[loadingScreenIndex].includes('uberchain'))
+                    $('#art-credit').attr('class', 'art-visible');
+                else
+                    $('#art-credit').attr('class', 'art-hidden');
+                $('#background-image').attr('class', 'background-image-visible');
+                $('#background-color').attr('class', 'background-color-visible');
+                $('#loading').html('Loading..');
+                $('#loading').attr('class', 'loading-visible');
+            }
+            else if(!data.loading && !data.time)
+            {
+                $('#background-image').attr('class', 'background-image-hidden');
+                $('#background-color').attr('class', 'background-color-hidden');
+                $('#loading').attr('class', 'loading-hidden');
+                $('#art-credit').attr('class', 'art-hidden');
+                loadingScreenIndex++;
+                if (loadingScreenIndex >= loadingScreens.length)
+                    loadingScreenIndex = 0;
+            }
+            if (data.time)
+            {
+                $('#timer').html(data.time);
+                $('#timer').attr('class', 'timer-visible');
+            }
+            else
+            {
+                $('#timer').attr('class', 'timer-hidden');
+            }
+        });
+
+        socket.on('setInfo', function (data)
+        {
+            if (data.enabled)
+            {
+                $('#demo_info').html(`${data.name}<br>${data.map}<br>${data.tier}`);
+                $('#demo_info').attr('class', 'demo_info-visible');
+            }
+            else
+            {
+                $('#demo_info').attr('class', 'demo_info-hidden');
+            }
+        });
+
+        socket.on('setVotes', (data) =>
+        {
+            if (data.votes)
+            {
+                var str = 'Votes:<br/>';
+                for (var i = 0; i < (data.votes.length > 3 ? 3 : data.votes.length); i++)
+                {
+                    str += `${data.votes[i].vote_count} | ${data.votes[i].player_name} on ${data.votes[i].map_name} (${data.votes[i].class_name})<br/>`;
+                }
+                $('#votes').html(str);
+            }
+            else if (data.next !== undefined)
+            {
+                $('#votes').html(`Up next: ${data.next.player_name} on ${data.next.map_name} (${data.next.class_name})`);
+            }
+            $('#votes').attr('class', 'votes-visible');
+            setTimeout(() =>
+            {
+                $('#votes').attr('class', 'votes-hidden');
+            }, 6000);
+        });
+        window.onload = function ()
+        {
+            $('#background-image').attr('class', 'background-image-visible');
+            $('#background-color').attr('class', 'background-color-visible');
+            $('#art-credit').attr('class', 'art-visible');
+            $('#loading').html('Loading..');
+            $('#loading').attr('class', 'loading-visible');
+            $('#timer').attr('class', 'timer-hidden');
+            $('#votes').attr('class', 'votes-hidden');
+            $('#demo_info').attr('class', 'demo_info-hidden');
+            $('#error').attr('class', 'error-hidden');
+        }
+    </script>
+</body>
+</html>
