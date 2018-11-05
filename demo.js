@@ -268,7 +268,7 @@ function getDemos(refresh = false)
 
             var i = 0;
             while (i < detailedMapList.length)
-            {
+            {                 
                 for (var e = 0; e < 2; e++)
                 {
                     var classStr = (e == 0 ? 'd' : 's');
@@ -310,32 +310,32 @@ function getDemos(refresh = false)
                             // Sanity checking
                             if (!record.record_info)
                             {
-                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing record_info!`);
+                                log.printLn(`[TEMPUS] Record is missing record_info!`);
                                 return;
                             }
                             if (!record.demo_info)
                             {
-                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing demo_info!`);
+                                log.printLn(`[TEMPUS] Record is missing demo_info!`);
                                 return;
                             }
                             if (!record.map_info)
                             {
-                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing map_info!`);
+                                log.printLn(`[TEMPUS] Record is missing map_info!`);
                                 return;
                             }
                             if (!record.player_info)
                             {
-                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing player_info!`);
+                                log.printLn(`[TEMPUS] Record is missing player_info!`);
                                 return;
                             }
                             if (!record.tier_info)
                             {
-                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing tier_info!`);
+                                log.printLn(`[TEMPUS] Record is missing tier_info!`);
                                 return;
                             }
                             if (!record.zone_info)
                             {
-                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing zone_info!`);
+                                log.printLn(`[TEMPUS] Record is missing zone_info!`);
                                 return;
                             }
 
