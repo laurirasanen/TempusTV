@@ -71,11 +71,13 @@ function drawVotes()
         // has votes
         if (votes[i].users.length != 0)
         {
-            next = false;
             for (var e = 0; e < demos.length; e++)
             {
                 if (votes[i].demo_name == demos[e].demo_info.filename)
+                {
                     votes_obj.push({ vote_count: votes[i].users.length, map_name: demos[e].demo_info.mapname, player_name: demos[e].player_info.name, class_name: demos[e].record_info.class == 4 ? 'demo' : 'solly' });
+                    next = false;
+                } 
             }
         }
     }
