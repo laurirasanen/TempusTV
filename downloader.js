@@ -66,10 +66,10 @@ function getDemoFile(index, cb)
                                 if (demo !== currentDemo)
                                     return;
 
-                                // jungle inferno date 2017-10-16
+                                // jungle inferno date 2017-10-20, 1508544000 = 2017-10-21
                                 // boshy and kaptain are pretty much only people with original wrs before jungle inferno
                                 // un gato has cheval wr with mangler
-                                if (demos[index].demo_info.date < 1508112000 && demos[index].record_info.class == 3 &&
+                                if (demos[index].demo_info.date < 1508544000 && demos[index].record_info.class == 3 &&
                                     ((demos[index].player_info.steamid == 'STEAM_0:0:43167835' || demos[index].player_info.steamid == 'STEAM_0:0:36730682') ||
                                     demos[index].player_info.steamid == 'STEAM_0:1:53042796' && (demos[index].map_info.name == 'jump_cheval' || demos[index].map_info.name == 'jump_arctic_a2' )))
                                 {
