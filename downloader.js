@@ -94,7 +94,7 @@ function getDemoFile(index, cb)
                                     return cb(true);
                             });
 
-                        }).on('error', () =>
+                        }).on('error', (err) =>
                         {
                             stream.close(() => { });
                             log.printLn('[DL] Piping to file failed!', log.severity.ERROR);
