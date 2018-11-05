@@ -142,11 +142,7 @@ function startDemo(index)
         if (err)
         {
             log.printLn('[FILE] Could not write ttv_spec_player.cfg!', log.severity.ERROR);
-            //twitch.instance().say(`Something went wrong loading the demo, skipping.`, (err) =>
-            //{
-            //    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
-            //    log.printLnNoStamp(JSON.stringify(err));
-            //});
+            //twitch.instance().say(`Something went wrong loading the demo, skipping.`);
             log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
             if (err.code == 'EMFILE')
                 fs.unlink(tfPath + '/cfg/ttv_spec_player.cfg', (err) =>
