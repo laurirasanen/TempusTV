@@ -6,7 +6,8 @@
     app = require('./app.js'),
     log = require('./log.js'),
     overlay = require('./overlay.js'),
-    models = require('../DemoTools/fix_models.js');
+    models = require('../DemoTools/fix_models.js'),
+    demo = require('./demo.js');
 
 // Download demo file from AWS
 function getDemoFile(index, cb)
@@ -229,12 +230,14 @@ function download(url, map, demo, callback)
         {
             log.printLn('[DL] Error downloading', log.severity.ERROR);
             log.printLnNoStamp(e.message);
+            demo.skip();
         });
 
         response.on("error", function (e)
         {
             log.printLn('[DL] Error downloading', log.severity.ERROR);
             log.printLnNoStamp(e.message);
+            demo.skip();
         });
 
         callback(response, demo);
