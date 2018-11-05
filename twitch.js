@@ -52,7 +52,11 @@ function defineBotEvents(Bot)
             log.printLn('app_running: ' + app_running, log.severity.DEBUG);
             if (!app_running)
             {
-                Bot.say('!skip is not available right now.');
+                Bot.say('!skip is not available right now.', (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
                 return;
             }
 
@@ -75,14 +79,22 @@ function defineBotEvents(Bot)
                         catch (err)
                         {
                             log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
-                            Bot.say('!skip is not available right now.');
+                            Bot.say('!skip is not available right now.', (err) =>
+                            {
+                                log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                                log.printLnNoStamp(JSON.stringify(err));
+                            });
                             return;
                         }
                         //log.printLn('data: ' + JSON.stringify(data), log.severity.DEBUG);
 
                         if (!data || !data.stream || !data.stream.viewers)
                         {
-                            Bot.say('!skip is not available right now.');
+                            Bot.say('!skip is not available right now.', (err) =>
+                            {
+                                log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                                log.printLnNoStamp(JSON.stringify(err));
+                            });
                             return;
                         }
 
@@ -115,7 +127,11 @@ function defineBotEvents(Bot)
                             else
                                 message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}.`;
                         }
-                        Bot.say(message);
+                        Bot.say(message, (err) =>
+                        {
+                            log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                            log.printLnNoStamp(JSON.stringify(err));
+                        });
                     });
             });
         }
@@ -123,7 +139,11 @@ function defineBotEvents(Bot)
         {
             if (!app_running)
             {
-                Bot.say('!vote is not available right now.');
+                Bot.say('!vote is not available right now.', (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
                 return;
             }
 
@@ -163,29 +183,49 @@ function defineBotEvents(Bot)
 
             if (demo === null)
             {
-                Bot.say(`Uh-oh. Something went wrong finding demo for "${map_string} | ${class_string}"`);
+                Bot.say(`Uh-oh. Something went wrong finding demo for "${map_string} | ${class_string}"`, (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
                 return;
             }
             else
             {
                 if (demo === demos[currentDemo])
                 {
-                    Bot.say(`Can't vote for current run!`);
+                    Bot.say(`Can't vote for current run!`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
                     return;
                 }
                 if (demo.blacklisted)
                 {
-                    Bot.say(`${demo.record_info.class == 4 ? 'demoman' : 'soldier'} on ${demo.demo_info.mapname} is blacklisted!`);
+                    Bot.say(`${demo.record_info.class == 4 ? 'demoman' : 'soldier'} on ${demo.demo_info.mapname} is blacklisted!`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
                     return;
                 }
                 //if (demo.record_info.duration > 900)
                 //{
-                //    Bot.say(`Can't vote for ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} on ${demo.demo_info.mapname}. Runs exceeding 15 minutes are blacklisted!`);
+                //    Bot.say(`Can't vote for ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} on ${demo.demo_info.mapname}. Runs exceeding 15 minutes are blacklisted!`, (err) =>
+                //      {
+                //          log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                //          log.printLnNoStamp(JSON.stringify(err));
+                //      });
                 //    return;
                 //}
                 if (recentDemos.includes(demo))
                 {
-                    Bot.say(`@${chatter.username}, '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})' was recently played and cannot be voted for.`);
+                    Bot.say(`@${chatter.username}, '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})' was recently played and cannot be voted for.`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
                     return;
                 }
 
@@ -217,11 +257,19 @@ function defineBotEvents(Bot)
                 //log.printLn('runVotes: ' + JSON.stringify(runVotes), log.severity.DEBUG);
                 if (hasVoted)
                 {
-                    Bot.say(`${chatter.username} changed their vote to '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`);
+                    Bot.say(`${chatter.username} changed their vote to '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
                     return;
                 }
 
-                Bot.say(`${chatter.username} voted for '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`);
+                Bot.say(`${chatter.username} voted for '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`, (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
             }
         }
         if (chatter.message === '!forceskip' && (chatter.mod === true || chatter.username === 'tempusrecords'))
@@ -229,19 +277,31 @@ function defineBotEvents(Bot)
             log.printLn(`[TWITCH] ${chatter.username} used !forceskip, message: ${chatter.message}`, log.severity.DEBUG);
             if (!app_running)
             {
-                Bot.say('!forceskip is not available right now.');
+                Bot.say('!forceskip is not available right now.', (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
                 return;
             }
 
             demoC.skip();
-            Bot.say(`@${chatter.username} skipped the current run!`);
+            Bot.say(`@${chatter.username} skipped the current run!`, (err) =>
+            {
+                log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                log.printLnNoStamp(JSON.stringify(err));
+            });
         }
         if (chatter.message.startsWith('!setnextrun ') && (chatter.mod === true || chatter.username === 'tempusrecords'))
         {
             log.printLn(`[TWITCH] ${chatter.username} used !setnextrun, message: ${chatter.message}`, log.severity.DEBUG);
             if (!app_running)
             {
-                Bot.say('!setnextrun is not available right now.');
+                Bot.say('!setnextrun is not available right now.', (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
                 return;
             }
 
@@ -301,11 +361,19 @@ function defineBotEvents(Bot)
                     var vote = { demo_name: demo.demo_info.filename, users: users };
                     runVotes.push(vote);
                 }
-                Bot.say(`@${chatter.username} set next map '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`);
+                Bot.say(`@${chatter.username} set next map '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`, (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
             }
             else
             {
-                Bot.say(`@${chatter.username} couldn't find a run for '${map_string} ${class_string}'`);
+                Bot.say(`@${chatter.username} couldn't find a run for '${map_string} ${class_string}'`, (err) =>
+                {
+                    log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                    log.printLnNoStamp(JSON.stringify(err));
+                });
             }
         }
         if (chatter.message.startsWith('!rcon ') && (chatter.username === 'tempusrecords' || chatter.username === 'pancakelarry'))
@@ -354,9 +422,17 @@ function defineBotEvents(Bot)
             config.saveNick(steamid, name, chatter.username, (res, moderator) =>
             {
                 if (res)
-                    Bot.say(`@${moderator} Nickname saved!`);
+                    Bot.say(`@${moderator} Nickname saved!`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
                 else
-                    Bot.say(`@${moderator} Nickname could not be saved!`);
+                    Bot.say(`@${moderator} Nickname could not be saved!`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
             });
         }
         if (chatter.message == '!reboot' && (chatter.username === 'tempusrecords' || chatter.username === 'pancakelarry'))

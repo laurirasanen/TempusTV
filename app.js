@@ -120,7 +120,11 @@ function refresh()
                                 with '${tempDemos[0].player_info.name} on ${tempDemos[0].demo_info.mapname} as ${tempDemos[0].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(tempDemos[0].record_info.duration * 1000)})'!`, log.severity.INFO);
                         demos.splice(i, 1, tempDemos[0]);
                         if(twitch.instance())
-                            twitch.instance().say(`New run added: '${demos[i].player_info.name} on ${demos[i].demo_info.mapname} as ${demos[i].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[i].record_info.duration * 1000)})'!`);
+                            twitch.instance().say(`New run added: '${demos[i].player_info.name} on ${demos[i].demo_info.mapname} as ${demos[i].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[i].record_info.duration * 1000)})'!`, (err) =>
+                            {
+                                log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                                log.printLnNoStamp(JSON.stringify(err));
+                            });
                     }
 
                     tempDemos.splice(0, 1);
@@ -134,7 +138,11 @@ function refresh()
                 demos.push(tempDemos[0]);
                 tempDemos.splice(0, 1);
                 if (twitch.instance())
-                    twitch.instance().say(`New run added: '${demos[demos.length - 1].player_info.name} on ${demos[demos.length - 1].demo_info.mapname} as ${demos[demos.length - 1].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[demos.length - 1].record_info.duration * 1000)})'!`);
+                    twitch.instance().say(`New run added: '${demos[demos.length - 1].player_info.name} on ${demos[demos.length - 1].demo_info.mapname} as ${demos[demos.length - 1].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[demos.length - 1].record_info.duration * 1000)})'!`, (err) =>
+                    {
+                        log.printLn('[TWITCH] Bot.say error', log.severity.ERROR);
+                        log.printLnNoStamp(JSON.stringify(err));
+                    });
             }
         }
     }, 60 * 1000);
