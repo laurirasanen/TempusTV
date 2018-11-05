@@ -52,8 +52,6 @@ function getDemoFile(index, cb)
 
             download(demos[index].demo_info.url, false, currentDemo, (resp, demo) =>
             {
-                if (demo !== currentDemo)
-                    return;
                 resp.pipe(unzip.Parse())
                     .on('entry', (entry) =>
                     {
@@ -63,6 +61,10 @@ function getDemoFile(index, cb)
                             stream.close(() =>
                             {
                                 log.printLn(`[DL] Downloaded demo ${demos[index].demo_info.filename}`, log.severity.DEBUG);                                  
+
+                                // Don't fix viewmodels if demo was skipped (download still continues after skip)
+                                if (demo !== currentDemo)
+                                    return;
 
                                 // jungle inferno date 2017-10-16
                                 // boshy and kaptain are pretty much only people with original wrs before jungle inferno
