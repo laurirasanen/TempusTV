@@ -307,6 +307,38 @@ function getDemos(refresh = false)
                                 record.demo_end_tick,
                                 record.id;
 
+                            // Sanity checking
+                            if (!record.record_info)
+                            {
+                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing record_info!`);
+                                return;
+                            }
+                            if (!record.demo_info)
+                            {
+                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing demo_info!`);
+                                return;
+                            }
+                            if (!record.map_info)
+                            {
+                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing map_info!`);
+                                return;
+                            }
+                            if (!record.player_info)
+                            {
+                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing player_info!`);
+                                return;
+                            }
+                            if (!record.tier_info)
+                            {
+                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing tier_info!`);
+                                return;
+                            }
+                            if (!record.zone_info)
+                            {
+                                log.printLn(`[TEMPUS] Record ${detailedMapList[i].name} is missing zone_info!`);
+                                return;
+                            }
+
                             // Check if player has a nick assigned
                             if (nicks && record.player_info)
                             {
