@@ -294,7 +294,8 @@ function getDemos(refresh = false)
                                 "duration": record.duration,
                                 "demo_end_tick": record.demo_end_tick,
                                 "id": record.id
-                            };                     
+                            };      
+
                             delete record.demo_id,
                                 record.server_id,
                                 record.user_id,
@@ -307,35 +308,42 @@ function getDemos(refresh = false)
                                 record.demo_end_tick,
                                 record.id;
 
+                            // nolem's tempus-api also doesn't return map_info, only map name in parent object
+                            record.map_info = {
+                                "name": record.map
+                            };
+
+                            delete record.map;
+
                             // Sanity checking
                             if (!record.record_info)
                             {
-                                log.printLn(`[TEMPUS] Record is missing record_info!`);
+                                log.printLn(`[TEMPUS] Record is missing record_info!`, log.severity.WARN);
                                 return;
                             }
                             if (!record.demo_info)
                             {
-                                log.printLn(`[TEMPUS] Record is missing demo_info!`);
+                                log.printLn(`[TEMPUS] Record is missing demo_info!`, log.severity.WARN);
                                 return;
                             }
                             if (!record.map_info)
                             {
-                                log.printLn(`[TEMPUS] Record is missing map_info!`);
+                                log.printLn(`[TEMPUS] Record is missing map_info!`, log.severity.WARN);
                                 return;
                             }
                             if (!record.player_info)
                             {
-                                log.printLn(`[TEMPUS] Record is missing player_info!`);
+                                log.printLn(`[TEMPUS] Record is missing player_info!`, log.severity.WARN);
                                 return;
                             }
                             if (!record.tier_info)
                             {
-                                log.printLn(`[TEMPUS] Record is missing tier_info!`);
+                                log.printLn(`[TEMPUS] Record is missing tier_info!`, log.severity.WARN);
                                 return;
                             }
                             if (!record.zone_info)
                             {
-                                log.printLn(`[TEMPUS] Record is missing zone_info!`);
+                                log.printLn(`[TEMPUS] Record is missing zone_info!`, log.severity.WARN);
                                 return;
                             }
 
@@ -377,6 +385,10 @@ function getDemos(refresh = false)
                                         if (demos.length % 100 == 0)
                                             log.printLnNoStamp(`[TEMPUS] Loaded ${demos.length} records!`, log.severity.DEBUG);
                                 }
+                            }
+                            else
+                            {
+                                log.printLn(`[TEMPUS] Record is missing demo_info.url!`);
                             }
                         })
                             .catch((err) =>
