@@ -238,7 +238,13 @@ function download(url, map, demo, callback)
         });
 
         callback(response, demo);
-    });
+    })
+        .on('error', (err) =>
+        {
+            log.print('[DL] Error downloading', log.severity.ERROR);
+            log.printLnNoStamp(err.message);
+            demo.skip();
+        });
 };
 
 module.exports.getDemoFile = getDemoFile;
