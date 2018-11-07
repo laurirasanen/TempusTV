@@ -27,6 +27,7 @@ fs.mkdir(`${__dirname}/logs`, err =>
     }
 });
 const logFile = fs.createWriteStream(logPath);
+const errFile = fs.createWriteStream(logPath.replace('log_', 'err_'));
 
 const severity = {
     'DEBUG': 0,
@@ -110,8 +111,14 @@ function printLnNoStamp(msg, severity)
         console.log(msg);
     }
 }
+function error(err)
+{
+    if(err.message && err.stack)
+        errFile.write(`${timeStamp.now} ${err.message}\n${err.stack}\n`);
+}
 
 module.exports.printLn = printLn;
 module.exports.printLnNoStamp = printLnNoStamp;
 module.exports.severity = severity;
 module.exports.logSeverity = logSeverity;
+module.exports.error = error;

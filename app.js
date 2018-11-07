@@ -188,6 +188,19 @@ config.loadCfg((err, cfg) =>
         setTimeout(start, 60 * 1000);
 });
 
+process.on('uncaughtException', (err) =>
+{
+    log.printLn(`uncaughtException: ${err.message}`, log.severity.ERROR);
+    log.printLnNoStamp(err.stack, log.severity.DEBUG);
+    log.error(err);
+    
+    exec('"C:\\Windows\\System32\\cmd.exe" /k shutdown /f /r /t 0', null, { shell: true }, function (err, data)
+    {
+        if (err)
+            console.log(err)
+    });
+})
+
 // Server instance for overlay io socket
 module.exports.server = server;
 module.exports.load = load;
