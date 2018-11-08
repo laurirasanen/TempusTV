@@ -241,7 +241,7 @@ function download(url, map, demo, callback)
     })
         .on('error', (err) =>
         {
-            log.print('[DL] Error downloading', log.severity.ERROR);
+            log.printLn('[DL] Error downloading', log.severity.ERROR);
             log.printLnNoStamp(err.message);
             demo.skip();
         });
