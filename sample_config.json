@@ -53,8 +53,9 @@
 		"game": 440
 	},
 	"tv":{
-		"autoLoad": true,
-		"autoStart": true
+		"autoStart": true,
+		"preDownload": false,
+		"rebootOnException": false
 	},
 	"log":{
 		"severity": 2

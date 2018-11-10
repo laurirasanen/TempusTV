@@ -71,7 +71,7 @@ function getDemoFile(index, cb)
                                 // un gato has cheval wr with mangler
                                 if (demos[index].demo_info.date < 1508544000 && demos[index].record_info.class == 3 &&
                                     ((demos[index].player_info.steamid == 'STEAM_0:0:43167835' || demos[index].player_info.steamid == 'STEAM_0:0:36730682') ||
-                                    demos[index].player_info.steamid == 'STEAM_0:1:53042796' && (demos[index].map_info.name == 'jump_cheval' || demos[index].map_info.name == 'jump_arctic_a2' )))
+                                    demos[index].player_info.steamid == 'STEAM_0:1:53042796' && (demos[index].demo_info.mapname == 'jump_cheval' || demos[index].demo_info.mapname == 'jump_arctic_a2' )))
                                 {
                                     overlay.drawLoadingStatus('Fixing viewmodels');
 

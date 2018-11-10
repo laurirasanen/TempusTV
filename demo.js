@@ -304,13 +304,6 @@ function getDemos(refresh = false)
                                 record.demo_end_tick,
                                 record.id;
 
-                            // nolem's tempus-api also doesn't return map_info, only map name in parent object
-                            record.map_info = {
-                                "name": record.map
-                            };
-
-                            delete record.map;
-
                             // Sanity checking
                             if (!record.record_info)
                             {
@@ -320,11 +313,6 @@ function getDemos(refresh = false)
                             if (!record.demo_info)
                             {
                                 log.printLn(`[TEMPUS] Record is missing demo_info!`, log.severity.WARN);
-                                return;
-                            }
-                            if (!record.map_info)
-                            {
-                                log.printLn(`[TEMPUS] Record is missing map_info!`, log.severity.WARN);
                                 return;
                             }
                             if (!record.player_info)
@@ -376,10 +364,10 @@ function getDemos(refresh = false)
 
                                     // TODO: Figure out less spammy way of printing progress
                                     if (demos.length > 940)
-                                        log.printLnNoStamp(`[TEMPUS] Loaded ${demos.length} records!`, log.severity.DEBUG);
+                                        log.printLnNoStamp(`[TEMPUS] Fetched ${demos.length} records!`, log.severity.DEBUG);
                                     else
                                         if (demos.length % 100 == 0)
-                                            log.printLnNoStamp(`[TEMPUS] Loaded ${demos.length} records!`, log.severity.DEBUG);
+                                            log.printLnNoStamp(`[TEMPUS] Fetched ${demos.length} records!`, log.severity.DEBUG);
                                 }
                             }
                             else

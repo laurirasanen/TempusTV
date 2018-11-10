@@ -9,7 +9,8 @@ var log = require('./log.js'),
     utils = require('./utils.js'),
     stdio = require('./stdio.js'),
     utils = require('./utils.js'),
-    config = require('./config.js');
+    config = require('./config.js'),
+    dl = require('./downloader.js');
 
 var http = require('http'),
     express = require('express'),
@@ -21,7 +22,11 @@ var http = require('http'),
     exec = require('child_process').execFile;
 
 // TODO: Clean up these globals
-var app_loaded = false;
+var app_loaded = false,
+    pre_demos = false,
+    pre_maps = false,
+    pre_mapsArr = [];
+
 global.app_running = false,
 global.demo_loaded = false,
 global.demo_playback = false,
@@ -82,11 +87,14 @@ function load()
                 });
         }
         server.listen(cfg.overlay.port);
+
+        if (!cfg.tv.preDownload)
+            demo.getDemos();
     });
 
     startTF2();
     rcon.init();
-    demo.getDemos();
+    
     // Refresh runs every 10 mins
     // TODO: Monitor tempus activity instead
     setTimeout(refresh, 10 * 60 * 1000);
@@ -94,7 +102,7 @@ function load()
 
 function refresh()
 {
-    log.printLn('[TEMPUS] Checking for new runs..');
+    log.printLn('[TEMPUS] Checking for new runs..', log.severity.INFO);
     demo.getDemos(true);
     setTimeout(() =>
     {
@@ -161,6 +169,66 @@ function stop()
     utils.cleanUp();
 }
 
+function loadAll()
+{
+    demo.getDemos();
+    setTimeout(() =>
+    {
+        if (demos.length > 0)
+        {
+            log.printLn('Starting download for all maps and demo files!', log.severity.WARN);
+            getDemoFile(0);
+
+            for (var i = 0; i < demos.length; i++)
+            {
+                if (!demos[i].demo_info.mapname)
+                    continue;
+
+                if (!pre_mapsArr.includes(demos[i].demo_info.mapname))
+                    pre_mapsArr.push(demos[i].demo_info.mapname);
+            }  
+
+            getMap(0);
+        }
+    }, 60 * 1000);
+}
+
+function getDemoFile(index)
+{
+    log.printLn(`Downloading demo file ${demos[index].demo_info.filename} (${index+1}/${demos.length})`, log.severity.INFO);
+    dl.getDemoFile(index, (res) =>
+    {
+        if (index + 1 < demos.length)
+            getDemoFile(index + 1);
+        else
+        {
+            pre_demos = true;
+            log.printLn('Finished downloading demos files!', log.severity.WARN);
+
+            if (pre_maps)
+                init();
+        }
+    });
+}
+
+function getMap(index)
+{
+    log.printLn(`Downloading map ${pre_mapsArr[index]} (${index + 1}/${pre_mapsArr.length})`, log.severity.INFO);
+    dl.getMap(pre_mapsArr[index], (res) =>
+    {
+        if (index + 1 < pre_mapsArr.length)
+            getMap(index + 1);
+        else
+        {
+            pre_maps = true;
+            log.printLn('Finished downloading maps!', log.severity.WARN);
+
+            if (pre_demos)
+                init();  
+        }
+    });
+}
+
 // Serve overlay to obs
 app.get('/overlay', function (req, res)
 {
@@ -172,6 +240,7 @@ config.loadCfg((err, cfg) =>
     if (err) return;
 
     tfPath = cfg.tf2.tfPath;
+
     // FIXME: This will only work with obs64, use regex to check if 32 or 64
     // obs wants working directory to be same as the .exe location
     // use cd /d
@@ -180,26 +249,46 @@ config.loadCfg((err, cfg) =>
     for (var i = 0; i < cfg.tf2.launchOptions.length; i++)
         launchCmd += ` ${cfg.tf2.launchOptions[i]}`;
 
-    if (cfg.tv.autoLoad)
-        load();
-    // FIXME
-    // use a callback instead of guessing how long it takes to load TF2 and tempus api stuff
-    if (cfg.tv.autoStart)
-        setTimeout(start, 60 * 1000);
+    if (cfg.tv.preDownload)
+    {
+        log.printLnNoStamp('Predownloading all maps and demo files.\nPlayback will start once finished!', log.severity.WARN);
+        loadAll();
+        return;
+    }        
 });
+
+function init()
+{
+    load();
+    config.loadCfg((err, cfg) =>
+    {
+        // FIXME
+        // use a callback instead of guessing how long it takes to load TF2 and tempus api stuff
+        if (cfg.tv.autoStart)
+            setTimeout(start, 60 * 1000);
+    });    
+}
 
 process.on('uncaughtException', (err) =>
 {
     log.printLn(`uncaughtException: ${err.message}`, log.severity.ERROR);
     log.printLnNoStamp(err.stack, log.severity.DEBUG);
     log.error(err);
-    
-    exec('"C:\\Windows\\System32\\cmd.exe" /k shutdown /f /r /t 0', null, { shell: true }, function (err, data)
+
+    config.loadCfg((err, cfg) =>
     {
-        if (err)
-            console.log(err)
+        if (err) return;
+
+        if (cfg.tv.rebootOnException)
+        {
+            exec('"C:\\Windows\\System32\\cmd.exe" /k shutdown /f /r /t 0', null, { shell: true }, function (err, data)
+            {
+                if (err)
+                    console.log(err);
+            });
+        }
     });
-})
+});
 
 // Server instance for overlay io socket
 module.exports.server = server;
