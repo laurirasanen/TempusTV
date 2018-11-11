@@ -254,7 +254,8 @@ config.loadCfg((err, cfg) =>
         log.printLnNoStamp('Predownloading all maps and demo files.\nPlayback will start once finished!', log.severity.WARN);
         loadAll();
         return;
-    }        
+    }
+    init();
 });
 
 function init()
