@@ -126,7 +126,13 @@ function refresh()
                     {
                         log.printLn(`[TEMPUS] Replacing run: '${demos[i].player_info.name} on ${demos[i].demo_info.mapname} as ${demos[i].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[i].record_info.duration * 1000)})'\n
                                 with '${tempDemos[0].player_info.name} on ${tempDemos[0].demo_info.mapname} as ${tempDemos[0].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(tempDemos[0].record_info.duration * 1000)})'!`, log.severity.INFO);
+
+                        for (var e = 0; e < runVotes.length; e++) {
+                            if (runVotes[e].demo_name == demos[i].demo_info.filename)
+                                runVotes[e].demo_name = tempDemos[0].demo_info.filename
+                        }
                         demos.splice(i, 1, tempDemos[0]);
+
                         if(twitch.instance())
                             twitch.instance().say(`New run added: '${demos[i].player_info.name} on ${demos[i].demo_info.mapname} as ${demos[i].record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demos[i].record_info.duration * 1000)})'!`);
                     }
