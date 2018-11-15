@@ -202,23 +202,45 @@ var srv = net.createServer(function (sock)
             //    });
 
             overlay.drawVotes();
-            return;
-        }
-        if (data.toString().includes('ttv_run_end') && playback)
-        {
-            log.printLn('[DEMO] RUN END', log.severity.INFO);
-            if (demos[currentDemo] != null)
-                overlay.update(true, true);
+
+            setTimeout((index) =>
+            {
+                if (playback && index === currentDemo)
+                {
+                    log.printLn('[DEMO] RUN END', log.severity.INFO);
+                    overlay.update(true, true);
+                    conn.send('volume 0');
+
+                    // Overlay takes a second to fade in
+                    setTimeout((index) =>
+                    {
+                        if (playback && index == currentDemo)
+                        {
+                            log.printLn('[DEMO] RUN NEXT', log.severity.INFO);
+                            demo.skip();
+                        }
+                    }, 1250, index);
+                }
+
+            }, 5000, currentDemo);
 
             return;
         }
-        if (data.toString().includes('ttv_run_next') && playback)
-        {
-            log.printLn('[DEMO] RUN NEXT', log.severity.INFO);
-            overlay.drawLoadingStatus('Selecting next demo');
-            demo.skip();
-            return;
-        }
+        //if (data.toString().includes('ttv_run_end') && playback)
+        //{
+        //    log.printLn('[DEMO] RUN END', log.severity.INFO);
+        //    if (demos[currentDemo] != null)
+        //        overlay.update(true, true);
+
+        //    return;
+        //}
+        //if (data.toString().includes('ttv_run_next') && playback)
+        //{
+        //    log.printLn('[DEMO] RUN NEXT', log.severity.INFO);
+        //    overlay.drawLoadingStatus('Selecting next demo');
+        //    demo.skip();
+        //    return;
+        //}
     })
     .on('error', (err) =>
     {

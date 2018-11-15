@@ -92,8 +92,8 @@ function drawVotes()
     else
         obj.votes = votes_obj;
 
-    log.printLn('next: ' + next, log.severity.DEBUG);
-    log.printLn('obj: ' + JSON.stringify(obj), log.severity.DEBUG);
+    //log.printLn('next: ' + next, log.severity.DEBUG);
+    //log.printLn('obj: ' + JSON.stringify(obj), log.severity.DEBUG);
     app.io.of('/').clients(function (error, clients)
     {
         if (error)

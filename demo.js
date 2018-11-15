@@ -164,9 +164,9 @@ function startDemo(index)
             { tick: demos[index].record_info.demo_start_tick - startPadding, commands: `exec ttv_spec_player; spec_mode 4; demo_resume; volume 0.05; rcon ttv_run_start` },
             { tick: demos[index].record_info.demo_start_tick - (startPadding / 4) * 3, commands: `rcon ttv_run_start_timer` },
             { tick: demos[index].record_info.demo_start_tick, commands: `exec ttv_spec_player; spec_mode 4` }, //in case player dead before start_tick
-            { tick: demos[index].record_info.demo_end_tick - endTimerPadding, commands: 'rcon ttv_run_end_timer' },
+            { tick: demos[index].record_info.demo_end_tick - endTimerPadding, commands: 'rcon ttv_run_end_timer' }/*,
             { tick: demos[index].record_info.demo_end_tick + (endPadding / 4) * 3, commands: 'rcon ttv_run_end' },
-            { tick: demos[index].record_info.demo_end_tick + endPadding, commands: 'volume 0; rcon ttv_run_next' }
+            { tick: demos[index].record_info.demo_end_tick + endPadding, commands: 'volume 0; rcon ttv_run_next' }*/
         ];
 
         // Write the play commands
@@ -490,10 +490,9 @@ function playVoted()
     else
     {
         log.printLn('[VOTES] Error: target == -1', log.severity.ERROR);
-        currentDemo++;
-        if (currentDemo >= demos.length)
-            currentDemo = 0;
-        playDemo(currentDemo);
+        runVotes.splice(most, 1);
+        log.printLn(`[VOTES] Removed votes for ${demos[0].demo_info.filename}`, log.severity.DEBUG);
+        skip();
     }
 }
 
