@@ -49,12 +49,18 @@ config.loadCfg((err, cfg) =>
         Bot = new twitchBot({
             username: cfg.twitch.username,
             oauth: cfg.twitch.oauth,
-            channels: cfg.twitch.channels
+            channels: []
         });
+
+        for (var i = 0; i < cfg.twitch.channels.length; i++)
+            Bot.channels.push({ name: cfg.twitch.channels[i], connected: false });
 
         Bot.on('join', (channel) =>
         {
             log.printLn(`[TWITCH] Joined ${channel}`, log.severity.INFO);
+            for (var i = 0; i < Bot.channels.length; i++)
+                if (Bot.channels[i].name == channel)
+                    Bot.channels[i].connected = true;
         });
 
         Bot.on('message', (chatter) =>
@@ -384,6 +390,18 @@ config.loadCfg((err, cfg) =>
         Bot.on('close', () =>
         {
             log.printLn('[TWITCH] Closed bot irc connection', log.severity.INFO)
+            for (var i = 0; i < Bot.channels.length; i++)
+                Bot.channels[i].connected = false;
+            reconnect();
+        });
+
+        Bot.on('part', (channel) =>
+        {
+            log.printLn(`[TWITCH] parted from channel ${channel}`, log.severity.WARN)
+            for (var i = 0; i < Bot.channels.length; i++)
+                if(Bot.channels[i].name == channel)
+                    Bot.channels[i].connected = false;
+            reconnect();
         });
 
         Bot.on('error', (err) =>
@@ -393,11 +411,33 @@ config.loadCfg((err, cfg) =>
         });
 
         for (var i = 0; i < Bot.channels.length; i++)
-            Bot.join(Bot.channels[i]);
+            Bot.join(Bot.channels[i].name);
 
         instance = function () { return Bot };
         module.exports.instance = instance;
     }
 });
+
+function reconnect()
+{
+    log.printLn('[TWITCH] Attemping to reconnect to chat');
+    if (Bot && Bot.channels)
+    {
+        for (var i = 0; i < Bot.channels.length; i++)
+            if(!Bot.channels[i].connected)
+                Bot.join(Bot.channels[i].name);
+    }
+    setTimeout(() =>
+    {
+        for (var i = 0; i < Bot.channels.length; i++)
+        {
+            if (!Bot.channels[i].connected)
+            {
+                reconnect();
+                break;
+            }
+        }
+    }, 10000);
+}
 
 module.exports.instance = instance;
