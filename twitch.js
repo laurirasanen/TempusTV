@@ -8,7 +8,8 @@
     config = require('./config.js'),
     exec = require('child_process').execFile,
     config = require('./config.js'),
-    Bot = null;
+    Bot = null,
+    connections = [];
 
 function reboot()
 {
@@ -49,18 +50,18 @@ config.loadCfg((err, cfg) =>
         Bot = new twitchBot({
             username: cfg.twitch.username,
             oauth: cfg.twitch.oauth,
-            channels: []
+            channels: cfg.twitch.channels
         });
 
         for (var i = 0; i < cfg.twitch.channels.length; i++)
-            Bot.channels.push({ name: cfg.twitch.channels[i], connected: false });
+            connections.push({ name: cfg.twitch.channels[i], connected: false });
 
         Bot.on('join', (channel) =>
         {
             log.printLn(`[TWITCH] Joined ${channel}`, log.severity.INFO);
-            for (var i = 0; i < Bot.channels.length; i++)
-                if (Bot.channels[i].name == channel)
-                    Bot.channels[i].connected = true;
+            for (var i = 0; i < connections.length; i++)
+                if (connections[i].name == channel)
+                    connections[i].connected = true;
         });
 
         Bot.on('message', (chatter) =>
@@ -390,17 +391,17 @@ config.loadCfg((err, cfg) =>
         Bot.on('close', () =>
         {
             log.printLn('[TWITCH] Closed bot irc connection', log.severity.INFO)
-            for (var i = 0; i < Bot.channels.length; i++)
-                Bot.channels[i].connected = false;
+            for (var i = 0; i < connections.length; i++)
+                connections[i].connected = false;
             reconnect();
         });
 
         Bot.on('part', (channel) =>
         {
             log.printLn(`[TWITCH] parted from channel ${channel}`, log.severity.WARN)
-            for (var i = 0; i < Bot.channels.length; i++)
-                if(Bot.channels[i].name == channel)
-                    Bot.channels[i].connected = false;
+            for (var i = 0; i < connections.length; i++)
+                if (connections[i].name == channel)
+                    connections[i].connected = false;
             reconnect();
         });
 
@@ -410,8 +411,8 @@ config.loadCfg((err, cfg) =>
             log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
         });
 
-        for (var i = 0; i < Bot.channels.length; i++)
-            Bot.join(Bot.channels[i].name);
+        for (var i = 0; i < connections.length; i++)
+            Bot.join(connections[i].name);
 
         instance = function () { return Bot };
         module.exports.instance = instance;
@@ -421,17 +422,17 @@ config.loadCfg((err, cfg) =>
 function reconnect()
 {
     log.printLn('[TWITCH] Attemping to reconnect to chat');
-    if (Bot && Bot.channels)
+    if (Bot && connections)
     {
-        for (var i = 0; i < Bot.channels.length; i++)
-            if(!Bot.channels[i].connected)
-                Bot.join(Bot.channels[i].name);
+        for (var i = 0; i < connections.length; i++)
+            if (!connections[i].connected)
+                Bot.join(connections[i].name);
     }
     setTimeout(() =>
     {
-        for (var i = 0; i < Bot.channels.length; i++)
+        for (var i = 0; i < connections.length; i++)
         {
-            if (!Bot.channels[i].connected)
+            if (!connections[i].connected)
             {
                 reconnect();
                 break;
