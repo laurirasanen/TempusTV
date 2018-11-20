@@ -457,7 +457,8 @@ function shuffle()
 }
 
 // Play the most voted map, prioritize old votes if equal amounts
-function playVoted()
+// Passing peek = true causes additional check for target == -1 when only checking for the next demo 
+function playVoted(peek = false)
 {
     var most = 0;
     for (var i = 0; i < runVotes.length; i++)
@@ -481,11 +482,17 @@ function playVoted()
         demos.splice(fromIndex, 1);
         demos.splice(toIndex, 0, element);
 
-        runVotes.splice(most, 1);
-        log.printLn(`[VOTES] Removed votes for ${demos[0].demo_info.filename}`, log.severity.DEBUG);
-
+        if (peek == false) {
+            runVotes.splice(most, 1);
+            log.printLn(`[VOTES] Removed votes for ${demos[0].demo_info.filename}`, log.severity.DEBUG);
+        }
         currentDemo = toIndex;
+        if (peek == true) {
+            return demos[currentDemo];
+        }
+        else {
         playDemo(currentDemo);
+        }
     }
     else
     {
