@@ -34,6 +34,7 @@ global.currentDemo = 0,
 global.demos = [],
 global.tempDemos = [],
 global.recentDemos = [],
+global.runStartTime = 0,
 global.callbackUUID,
 global.runVotes = [],
 global.userSkips = [];

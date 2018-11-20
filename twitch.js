@@ -350,6 +350,18 @@ config.loadCfg((err, cfg) =>
                     Bot.say(`@${chatter.username} next run: '${peekedDemo.player_info.name} on ${peekedDemo.demo_info.mapname} as ${peekedDemo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(peekedDemo.record_info.duration * 1000)})'!`);
                 }
             }
+            if (chatter.message.startsWith('!time'))
+            {
+                //Do we need to log this?
+                //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
+                if (!app_running || !demo_playback)
+                {
+                    Bot.say('!time is not available right now.');
+                    return;
+                }
+                var current = Date.now() - runStartTime;
+                Bot.say(`@${chatter.username} run time: ${utils.msToTimeStamp(current)}/${utils.msToTimeStamp(peekedDemo.record_info.duration * 1000)}`);
+            }
             if (chatter.message.startsWith('!rcon ') && (chatter.username === 'tempusrecords' || chatter.username === 'pancakelarry'))
             {
                 log.printLn(`[TWITCH] ${chatter.username} used !rcon, message: ${chatter.message}`, log.severity.DEBUG);

@@ -21,7 +21,7 @@ var demoLoadTimeout = 20000;
 
 function playDemo(index)
 {
-    playback = false;
+    demo_playback = false;
     demo_loaded = false;
     if (rcon.active)
         rcon.instance().send('volume 0');
@@ -69,7 +69,7 @@ function playDemo(index)
                     {
                         if (err)
                         {
-                            if (playback)
+                            if (demo_playback)
                                 return;
                             if (err.code === 'ENOENT')
                             {
@@ -163,7 +163,7 @@ function startDemo(index)
             { tick: 33, commands: `fog_override 1; fog_enable 0; rcon ttv_demo_load; demo_gototick ${demos[index].record_info.demo_start_tick - startPadding}; demo_setendtick ${demos[index].record_info.demo_end_tick + endPadding + 66}` },
             { tick: demos[index].record_info.demo_start_tick - startPadding, commands: `exec ttv_spec_player; spec_mode 4; demo_resume; volume 0.05; rcon ttv_run_start` },
             { tick: demos[index].record_info.demo_start_tick - (startPadding / 4) * 3, commands: `rcon ttv_run_start_timer` },
-            { tick: demos[index].record_info.demo_start_tick, commands: `exec ttv_spec_player; spec_mode 4` }, //in case player dead before start_tick
+            { tick: demos[index].record_info.demo_start_tick, commands: `exec ttv_spec_player; spec_mode 4; rcon ttv_run_start_actual` }, //in case player dead before start_tick
             { tick: demos[index].record_info.demo_end_tick - endTimerPadding, commands: 'rcon ttv_run_end_timer' }/*,
             { tick: demos[index].record_info.demo_end_tick + (endPadding / 4) * 3, commands: 'rcon ttv_run_end' },
             { tick: demos[index].record_info.demo_end_tick + endPadding, commands: 'volume 0; rcon ttv_run_next' }*/

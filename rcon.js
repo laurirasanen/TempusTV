@@ -139,7 +139,7 @@ var srv = net.createServer(function (sock)
                     return;
 
                 // demo loading took too long
-                if (!playback && demo_loaded)
+                if (!demo_playback && demo_loaded)
                 {
                     if (demoRetry === 2)
                     {
@@ -164,7 +164,7 @@ var srv = net.createServer(function (sock)
             }, runStartTimeout, callbackUUID);
             return;
         }
-        if (data.toString().includes('ttv_run_start_timer') && playback)
+        if (data.toString().includes('ttv_run_start_timer') && demo_playback)
         {
             overlay.drawLoadingStatus();
             return;
@@ -175,11 +175,17 @@ var srv = net.createServer(function (sock)
             if (demos[currentDemo] != null)
                 overlay.update(false, false, '', true, demos[currentDemo].player_info.name, demos[currentDemo].demo_info.mapname, demos[currentDemo].tier_info[demos[currentDemo].record_info.class == 3 ? 'soldier' : 'demoman']);
             overlay.drawLoadingStatus('Done');
-            playback = true;
+            demo_playback = true;
 
             return;
         }
-        if (data.toString().includes('ttv_run_end_timer') && playback)
+        // The actual starting tick of a run as listed in tempus api
+        if (data.toString().includes('ttv_run_start_actual') && demo_playback)
+        {
+            runStartTime = Date.now();
+            return;
+        }
+        if (data.toString().includes('ttv_run_end_timer') && demo_playback)
         {
             log.printLn('[DEMO] END TIMER', log.severity.INFO);
             if (demos[currentDemo] != null)
@@ -205,7 +211,7 @@ var srv = net.createServer(function (sock)
 
             setTimeout((index) =>
             {
-                if (playback && index === currentDemo)
+                if (demo_playback && index === currentDemo)
                 {
                     log.printLn('[DEMO] RUN END', log.severity.INFO);
                     overlay.update(true, true);
@@ -214,7 +220,7 @@ var srv = net.createServer(function (sock)
                     // Overlay takes a second to fade in
                     setTimeout((index) =>
                     {
-                        if (playback && index == currentDemo)
+                        if (demo_playback && index == currentDemo)
                         {
                             log.printLn('[DEMO] RUN NEXT', log.severity.INFO);
                             demo.skip();
@@ -226,7 +232,7 @@ var srv = net.createServer(function (sock)
 
             return;
         }
-        //if (data.toString().includes('ttv_run_end') && playback)
+        //if (data.toString().includes('ttv_run_end') && demo_playback)
         //{
         //    log.printLn('[DEMO] RUN END', log.severity.INFO);
         //    if (demos[currentDemo] != null)
@@ -234,7 +240,7 @@ var srv = net.createServer(function (sock)
 
         //    return;
         //}
-        //if (data.toString().includes('ttv_run_next') && playback)
+        //if (data.toString().includes('ttv_run_next') && demo_playback)
         //{
         //    log.printLn('[DEMO] RUN NEXT', log.severity.INFO);
         //    overlay.drawLoadingStatus('Selecting next demo');
