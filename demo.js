@@ -457,9 +457,16 @@ function shuffle()
 }
 
 // Play the most voted map, prioritize old votes if equal amounts
-function playVoted()
+function playVoted(peek = false)
 {
     var most = 0;
+    if(runVotes.length == 0 && peek == true)
+    {
+        if(currentDemo + 1 < demos.length)
+            return demos[currentDemo+1];
+        else
+            return demos[0];
+    }
     for (var i = 0; i < runVotes.length; i++)
     {
         if (runVotes[i].users.length > runVotes[most].users.length)
@@ -481,18 +488,34 @@ function playVoted()
         demos.splice(fromIndex, 1);
         demos.splice(toIndex, 0, element);
 
-        runVotes.splice(most, 1);
-        log.printLn(`[VOTES] Removed votes for ${demos[0].demo_info.filename}`, log.severity.DEBUG);
-
+        if (peek == false) 
+        {
+            runVotes.splice(most, 1);
+            log.printLn(`[VOTES] Removed votes for ${demos[0].demo_info.filename}`, log.severity.DEBUG);
+        }
         currentDemo = toIndex;
-        playDemo(currentDemo);
+        if (peek == true) 
+        {
+            return demos[currentDemo];
+        }
+        else 
+        {
+            playDemo(currentDemo);
+        }
     }
     else
     {
         log.printLn('[VOTES] Error: target == -1', log.severity.ERROR);
         runVotes.splice(most, 1);
         log.printLn(`[VOTES] Removed votes for ${demos[0].demo_info.filename}`, log.severity.DEBUG);
-        skip();
+        if(peek == false)
+        {
+            skip();
+        }
+        else
+        {
+            return playVoted(true);
+        }
     }
 }
 

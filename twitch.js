@@ -18,8 +18,8 @@ function reboot()
         if (err)
             console.log(err)
     });
-}
 
+}
 // FIXME:
 // This is a duplicate of startTF2() in app.js
 // Cannot require('./app.js') here due to circular requirement
@@ -331,6 +331,25 @@ config.loadCfg((err, cfg) =>
                     Bot.say(`@${chatter.username} couldn't find a run for '${map_string} ${class_string}'`);
                 }
             }
+            if (chatter.message.startsWith('!nextrun'))
+            {
+                //Do we need to log this?
+                //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
+                if (!app_running)
+                {
+                    Bot.say('!nextrun is not available right now.');
+                    return;
+                }
+                var peekedDemo = demoC.playVoted(true);
+                if (!peekedDemo || !peekedDemo.player_info || !peekedDemo.demo_info || !peekedDemo.tier_info || !peekedDemo.record_info)
+                {
+                    Bot.say('It looks like the next demo might be broken and may be skipped...');
+                }
+                else 
+                {
+                    Bot.say(`@${chatter.username} next run: '${peekedDemo.player_info.name} on ${peekedDemo.demo_info.mapname} as ${peekedDemo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(peekedDemo.record_info.duration * 1000)})'!`);
+                }
+            }
             if (chatter.message.startsWith('!rcon ') && (chatter.username === 'tempusrecords' || chatter.username === 'pancakelarry'))
             {
                 log.printLn(`[TWITCH] ${chatter.username} used !rcon, message: ${chatter.message}`, log.severity.DEBUG);
@@ -440,5 +459,7 @@ function reconnect()
         }
     }, 10000);
 }
+
+
 
 module.exports.instance = instance;
