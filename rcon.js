@@ -164,25 +164,29 @@ var srv = net.createServer(function (sock)
             }, runStartTimeout, callbackUUID);
             return;
         }
+        // check ttv_run_start_timer and ttv_run_start_actual first since
+        // ttv_run_start is included in both
         if (data.toString().includes('ttv_run_start_timer') && demo_playback)
         {
+            log.printLn('[DEMO] RUN START TIMER', log.severity.INFO);
             overlay.drawLoadingStatus();
-            return;
-        }
-        if (data.toString().includes('ttv_run_start') && demo_loaded)
-        {
-            log.printLn('[DEMO] RUN START', log.severity.INFO);
-            if (demos[currentDemo] != null)
-                overlay.update(false, false, '', true, demos[currentDemo].player_info.name, demos[currentDemo].demo_info.mapname, demos[currentDemo].tier_info[demos[currentDemo].record_info.class == 3 ? 'soldier' : 'demoman']);
-            overlay.drawLoadingStatus('Done');
-            demo_playback = true;
-
             return;
         }
         // The actual starting tick of a run as listed in tempus api
         if (data.toString().includes('ttv_run_start_actual') && demo_playback)
         {
+            log.printLn('[DEMO] RUN START ACTUAL', log.severity.INFO);
             runStartTime = Date.now();
+            return;
+        }
+        if (data.toString().includes('ttv_run_start') && demo_loaded)
+        {
+            log.printLn('[DEMO] RUN START', log.severity.INFO);
+            overlay.drawLoadingStatus('Done');
+            if (demos[currentDemo] != null)
+                overlay.update(false, false, '', true, demos[currentDemo].player_info.name, demos[currentDemo].demo_info.mapname, demos[currentDemo].tier_info[demos[currentDemo].record_info.class == 3 ? 'soldier' : 'demoman']);            
+            demo_playback = true;
+
             return;
         }
         if (data.toString().includes('ttv_run_end_timer') && demo_playback)

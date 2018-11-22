@@ -360,7 +360,10 @@ config.loadCfg((err, cfg) =>
                     Bot.say('!time is not available right now.');
                     return;
                 }
+                // FIXME
                 var current = Date.now() - runStartTime;
+                if (current > demos[currentDemo].record_info.duration * 1000)
+                    current = demos[currentDemo].record_info.duration * 1000;
                 Bot.say(`@${chatter.username} run time: ${utils.msToTimeStamp(current)}/${utils.msToTimeStamp(demos[currentDemo].record_info.duration * 1000)}`);
             }
             if (chatter.message.startsWith('!map') || chatter.message.startsWith('!mi'))
@@ -376,15 +379,15 @@ config.loadCfg((err, cfg) =>
                 {
                     tempus.mapOverview(demos[currentDemo].demo_info.mapname).then((mapInfo) =>
                     {
-                        if (mapInfo && mapInfo.tier_info && mapInfo.authors && mapInfo.name)
+                        if (mapInfo && mapInfo.tiers && mapInfo.authors && mapInfo.name)
                         {
-                            if (mapInfo.authors.length == 0)
+                            if (!mapInfo.authors.length)
                             {
-                                Bot.say(`Map: ${mapInfo.name}\nAuthor: N/A\nTier:\n  Soldier: ${mapInfo.tier_info.soldier}\n  Demoman: ${mapInfo.tier_info.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}\nAuthor: N/A\nTier:\n  Soldier: ${mapInfo.tiers.soldier}\n  Demoman: ${mapInfo.tiers.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                             else if (mapInfo.authors.length == 1)
                             {
-                                Bot.say(`Map: ${mapInfo.name}\nAuthor: ${mapInfo.authors[0].name}\nTier:\n  Soldier: ${mapInfo.tier_info.soldier}\n  Demoman: ${mapInfo.tier_info.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}\nAuthor: ${mapInfo.authors[0].name}\nTier:\n  Soldier: ${mapInfo.tiers.soldier}\n  Demoman: ${mapInfo.tiers.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                             else if (mapInfo.authors.length > 1)
                             {
@@ -393,7 +396,7 @@ config.loadCfg((err, cfg) =>
                                 {
                                     authStr += `, ${mapInfo.authors[i].name}`
                                 }
-                                Bot.say(`Map: ${mapInfo.name}\nAuthor: ${authStr}\nTier:\n  Soldier: ${mapInfo.tier_info.soldier}\n  Demoman: ${mapInfo.tier_info.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}\nAuthor: ${authStr}\nTier:\n  Soldier: ${mapInfo.tiers.soldier}\n  Demoman: ${mapInfo.tiers.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                         }
                         else
