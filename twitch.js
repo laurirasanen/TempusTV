@@ -383,11 +383,11 @@ config.loadCfg((err, cfg) =>
                         {
                             if (!mapInfo.authors.length)
                             {
-                                Bot.say(`Map: ${mapInfo.name}\nAuthor: N/A\nTier:\n  Soldier: ${mapInfo.tiers.soldier}\n  Demoman: ${mapInfo.tiers.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}  Author: N/A  Tier: Soldier: ${mapInfo.tiers.soldier} Demoman: ${mapInfo.tiers.demoman}  Download: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                             else if (mapInfo.authors.length == 1)
                             {
-                                Bot.say(`Map: ${mapInfo.name}\nAuthor: ${mapInfo.authors[0].name}\nTier:\n  Soldier: ${mapInfo.tiers.soldier}\n  Demoman: ${mapInfo.tiers.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}  Author: ${mapInfo.authors[0].name}  Tier: Soldier: ${mapInfo.tiers.soldier} Demoman: ${mapInfo.tiers.demoman}  Download: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                             else if (mapInfo.authors.length > 1)
                             {
@@ -396,7 +396,7 @@ config.loadCfg((err, cfg) =>
                                 {
                                     authStr += `, ${mapInfo.authors[i].name}`
                                 }
-                                Bot.say(`Map: ${mapInfo.name}\nAuthor: ${authStr}\nTier:\n  Soldier: ${mapInfo.tiers.soldier}\n  Demoman: ${mapInfo.tiers.demoman}\nDownload: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}  Author: ${authStr}  Tier: Soldier: ${mapInfo.tiers.soldier} Demoman: ${mapInfo.tiers.demoman}  Download: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                         }
                         else
