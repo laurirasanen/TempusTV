@@ -332,7 +332,7 @@ config.loadCfg((err, cfg) =>
                     Bot.say(`@${chatter.username} couldn't find a run for '${map_string} ${class_string}'`);
                 }
             }
-            if (chatter.message.startsWith('!nextrun'))
+            if (chatter.message.startsWith('!nextrun') || chatter.message.startsWith('!nextmap'))
             {
                 //Do we need to log this?
                 //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
@@ -361,7 +361,7 @@ config.loadCfg((err, cfg) =>
                     return;
                 }
                 var current = Date.now() - runStartTime;
-                Bot.say(`@${chatter.username} run time: ${utils.msToTimeStamp(current)}/${utils.msToTimeStamp(peekedDemo.record_info.duration * 1000)}`);
+                Bot.say(`@${chatter.username} run time: ${utils.msToTimeStamp(current)}/${utils.msToTimeStamp(demos[currentDemo].record_info.duration * 1000)}`);
             }
             if (chatter.message.startsWith('!map') || chatter.message.startsWith('!mi'))
             {
@@ -374,7 +374,7 @@ config.loadCfg((err, cfg) =>
                 }
                 if (demos[currentDemo] && demos[currentDemo].demo_info.mapname)
                 {
-                    tempus.mapOverView(demos[currentDemo].demo_info.mapname).then((mapInfo) =>
+                    tempus.mapOverview(demos[currentDemo].demo_info.mapname).then((mapInfo) =>
                     {
                         if (mapInfo && mapInfo.tier_info && mapInfo.authors && mapInfo.name)
                         {
