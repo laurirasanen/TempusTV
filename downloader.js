@@ -154,7 +154,6 @@ function getMap(mapName, cb)
             overlay.drawLoadingStatus('Downloading map from tempus');
 
             var stream = fs.createWriteStream(tfPath + `/download/maps/${mapName}.bsp`);
-
             var mapUrl = `http://tempus.site.nfoservers.com/server/maps/${mapName}.bsp.bz2`;
 
             download(mapUrl, true, currentDemo, (resp, demo) =>

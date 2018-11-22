@@ -1,5 +1,5 @@
 'use strict';
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var log = require('./log.js'),
     overlay = require('./overlay.js'),
     rcon = require('./rcon.js'),
