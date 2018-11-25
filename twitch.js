@@ -396,7 +396,7 @@ config.loadCfg((err, cfg) =>
                                 {
                                     authStr += `, ${mapInfo.authors[i].name}`
                                 }
-                                Bot.say(`Map: ${mapInfo.name}  Author: ${authStr}  Tier: Soldier: ${mapInfo.tiers.soldier} Demoman: ${mapInfo.tiers.demoman}  Download: https://tempus.xyz/maps/${mapInfo.name}`);
+                                Bot.say(`Map: ${mapInfo.name}  Authors: ${authStr}  Tier: Soldier: ${mapInfo.tiers.soldier} Demoman: ${mapInfo.tiers.demoman}  Download: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
                         }
                         else
