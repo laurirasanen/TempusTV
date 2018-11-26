@@ -45,7 +45,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            background-image: url('/public/media/uberchain_baby_steps.png');
+            background-image: url('/public/media/dog.jpg');
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -66,7 +66,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            background-image: url('/public/media/uberchain_baby_steps.png');
+            background-image: url('/public/media/dog.jpg');
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -309,7 +309,7 @@
     <div id="background-image"></div>
 
     <script>
-        var loadingScreens = [
+        var loadingScreens1 = [
             '/public/media/dog.jpg',
             '/public/media/uberchain_baby_steps.png',
             '/public/media/dog1.jpg',
@@ -338,6 +338,26 @@
             '/public/media/dog13.jpg'
         ];
 
+        var loadingScreens2 = [
+            '/public/media/dog14.jpg',
+            '/public/media/dog15.jpg',
+            '/public/media/dog16.jpg',
+            '/public/media/dog17.jpg',
+            '/public/media/dog18.jpg',
+            '/public/media/dog19.jpg',
+            '/public/media/dog20.jpg',
+            '/public/media/dog21.jpg',
+            '/public/media/dog22.jpg',
+            '/public/media/dog23.jpg',
+            '/public/media/dog24.jpg'
+        ];
+
+        var loadingScreensXmas = [
+            '/public/media/xmas_dog.jpg',
+            '/public/media/xmas_dog1.jpg'
+        ];
+
+        var loadingScreens = loadingScreens2;
         var loadingScreenIndex = 0;
 
         var currentError = 0;
@@ -457,7 +477,7 @@
         {
             $('#background-image').attr('class', 'background-image-visible');
             $('#background-color').attr('class', 'background-color-visible');
-            $('#art-credit').attr('class', 'art-visible');
+            $('#art-credit').attr('class', 'art-hidden');
             $('#loading').html('Loading..');
             $('#loading').attr('class', 'loading-visible');
             $('#timer').attr('class', 'timer-hidden');
