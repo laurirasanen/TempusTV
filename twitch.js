@@ -332,7 +332,7 @@ config.loadCfg((err, cfg) =>
                     Bot.say(`@${chatter.username} couldn't find a run for '${map_string} ${class_string}'`);
                 }
             }
-            if (chatter.message.startsWith('!nextrun') || chatter.message.startsWith('!nextmap'))
+            if (chatter.message === '!nextrun' || chatter.message === '!nextmap')
             {
                 //Do we need to log this?
                 //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
@@ -351,7 +351,7 @@ config.loadCfg((err, cfg) =>
                     Bot.say(`@${chatter.username} next run: '${peekedDemo.player_info.name} on ${peekedDemo.demo_info.mapname} as ${peekedDemo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(peekedDemo.record_info.duration * 1000)})'!`);
                 }
             }
-            if (chatter.message.startsWith('!time'))
+            if (chatter.message === '!time')
             {
                 //Do we need to log this?
                 //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
@@ -366,7 +366,7 @@ config.loadCfg((err, cfg) =>
                     current = demos[currentDemo].record_info.duration * 1000;
                 Bot.say(`@${chatter.username} run time: ${utils.msToTimeStamp(current)}/${utils.msToTimeStamp(demos[currentDemo].record_info.duration * 1000)}`);
             }
-            if (chatter.message.startsWith('!map') || chatter.message.startsWith('!mi'))
+            if (chatter.message === '!map' || chatter.message === '!mi')
             {
                 //Do we need to log this?
                 //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
