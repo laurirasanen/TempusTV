@@ -11,11 +11,13 @@
             z-index: -3;
             height: 100%;
         }
+
         body {
             background-color: transparent;
             margin: 0;
             overflow: hidden;
         }
+
         .background-color-visible {
             z-index: -2;
             position: absolute;
@@ -28,6 +30,7 @@
             opacity: 1;
             transition: opacity 1s linear;
         }
+
         .background-color-hidden {
             z-index: -2;
             position: absolute;
@@ -40,6 +43,7 @@
             opacity: 0;
             transition: visibility 0s 2s, opacity 2s linear;
         }
+
         .background-image-visible {
             z-index: -1;
             position: absolute;
@@ -61,6 +65,7 @@
             opacity: 0.6;
             transition: opacity 1s linear;
         }
+
         .background-image-hidden {
             z-index: -1;
             position: absolute;
@@ -83,11 +88,34 @@
             opacity: 0;
             transition: visibility 0s 2s, opacity 2s linear;
         }
+        .overlay-effect-visible {
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            visibility: visible;
+            opacity: 1.0;
+            transition: opacity 1s linear;
+        }
 
+        .overlay-effect-hidden {
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 2s, opacity 2s linear;
+        }
         h1, h2 {
             color: white;
             margin: 0;
         }
+
         .loading-visible {
             z-index: 0;
             position: relative;
@@ -99,6 +127,7 @@
             opacity: 0.8;
             transition: opacity 1s linear;
         }
+
         .loading-hidden {
             z-index: 0;
             position: relative;
@@ -110,6 +139,7 @@
             opacity: 0;
             transition: visibility 0s 2s, opacity 2s linear;
         }
+
         .error-visible {
             z-index: 0;
             position: relative;
@@ -131,6 +161,7 @@
             opacity: 0;
             transition: visibility 0s 2s, opacity 2s linear;
         }
+
         .loading-status-visible {
             z-index: 0;
             position: relative;
@@ -178,12 +209,14 @@
             opacity: 0;
             transition: visibility 0s 0.5s, opacity 0.5s linear;
         }
+
         .center {
             z-index: 0;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
         .demo_info-visible {
             z-index: 0;
             font-family: 'Montserrat', sans-serif;
@@ -193,6 +226,7 @@
             opacity: 0.8;
             transition: opacity 1s linear;
         }
+
         .demo_info-hidden {
             z-index: 0;
             font-family: 'Montserrat', sans-serif;
@@ -202,6 +236,7 @@
             opacity: 0;
             transition: visibility 0s 2s, opacity 2s linear;
         }
+
         .art-visible {
             z-index: 0;
             font-family: 'Montserrat', sans-serif;
@@ -221,6 +256,7 @@
             opacity: 0;
             transition: visibility 0s 2s, opacity 2s linear;
         }
+
         .votes-visible {
             z-index: 0;
             font-family: 'Montserrat', sans-serif;
@@ -247,30 +283,35 @@
             top: 300px;
             position: absolute;
         }
+
         #loading-status-holder {
             z-index: 0;
             left: 3px;
             top: 500px;
             position: absolute;
         }
+
         #error-holder {
             z-index: 0;
             right: 0px;
             top: 300px;
             position: absolute;
         }
+
         #bottom-left {
             z-index: 0;
             position: absolute;
             left: 0;
             bottom: 0;
         }
+
         #top-right {
             z-index: 0;
             position: absolute;
             right: 0;
             top: 0;
         }
+
         #bottom-right {
             z-index: 0;
             position: absolute;
@@ -307,6 +348,7 @@
 
     <div id="background-color"></div>
     <div id="background-image"></div>
+    <div id="overlay-effect" class="overlay-effect-visible"></div>
 
     <script>
         var loadingScreens1 = [
@@ -354,11 +396,46 @@
 
         var loadingScreensXmas = [
             '/public/media/xmas_dog.jpg',
-            '/public/media/xmas_dog1.jpg'
+            '/public/media/xmas_dog1.jpg',
+            '/public/media/xmas_dog2.jpg',
+            '/public/media/xmas_dog3.jpg',
+            '/public/media/xmas_dog4.jpg',
+            '/public/media/xmas_dog5.jpg',
+            '/public/media/xmas_dog6.jpg',
+            '/public/media/xmas_dog7.jpg',
+            '/public/media/xmas_dog8.jpg',
+            '/public/media/xmas_dog9.jpg',
+            '/public/media/xmas_dog10.jpg'
         ];
 
         var loadingScreens = loadingScreens2;
         var loadingScreenIndex = 0;
+
+        var month = new Date().getUTCMonth();
+        if (month === 11)
+        {
+            // xmas screens in december
+            loadingScreens = loadingScreensXmas;
+
+            // snow!
+            $.getScript("https://cdn.rawgit.com/scottschiller/Snowstorm/master/snowstorm-min.js", function (data, textStatus, jqxhr)
+            {
+                if (jqxhr.status === 200)
+                {
+                    snowStorm.snowColor = '#fff';
+                    snowStorm.flakesMax = 128;
+                    snowStorm.flakesMaxActive = 128;
+                    snowStorm.useTwinkleEffect = true;
+                    snowStorm.snowStick = false;
+                    snowStorm.freezeOnBlur = false;
+                    snowStorm.followMouse = false;
+                    snowStorm.vMaxX = 5;
+                    snowStorm.vMaxY = 3;
+                    snowStorm.targetElement = "overlay-effect";
+                    snowStorm.start();
+                }
+            });            
+        }      
 
         var currentError = 0;
         var socket = io.connect('localhost:3000');
@@ -384,7 +461,7 @@
             else
             {
                 $('#loading-status').attr('class', 'loading-status-hidden');
-            }               
+            }
         });
         socket.on('setError', (data) =>
         {
@@ -415,13 +492,15 @@
                     $('#art-credit').attr('class', 'art-hidden');
                 $('#background-image').attr('class', 'background-image-visible');
                 $('#background-color').attr('class', 'background-color-visible');
+                $('#overlay-effect').attr('class', 'overlay-effect-visible');
                 $('#loading').html('Loading..');
                 $('#loading').attr('class', 'loading-visible');
             }
-            else if(!data.loading && !data.time)
+            else if (!data.loading && !data.time)
             {
                 $('#background-image').attr('class', 'background-image-hidden');
                 $('#background-color').attr('class', 'background-color-hidden');
+                $('#overlay-effect').attr('class', 'overlay-effect-hidden');
                 $('#loading').attr('class', 'loading-hidden');
                 $('#art-credit').attr('class', 'art-hidden');
                 loadingScreenIndex++;
@@ -432,6 +511,7 @@
             {
                 $('#timer').html(data.time);
                 $('#timer').attr('class', 'timer-visible');
+                $('#overlay-effect').attr('class', 'overlay-effect-visible');
             }
             else
             {
