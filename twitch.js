@@ -227,7 +227,7 @@ config.loadCfg((err, cfg) =>
                                 runVotes[i].users.splice(e, 1);
                             }
                         }
-                        if (runVotes[i].demo_name == demo.demo_info.filename)
+                        if (runVotes[i].demo == demo)
                         {
                             voteExists = true;
                             runVotes[i].users.push(chatter.username);
@@ -235,7 +235,7 @@ config.loadCfg((err, cfg) =>
                     }
                     if (!voteExists)
                     {
-                        var vote = { demo_name: demo.demo_info.filename, users: [chatter.username] };
+                        var vote = { demo: demo, users: [chatter.username] };
                         runVotes.push(vote);
                     }
                     //log.printLn('runVotes: ' + JSON.stringify(runVotes), log.severity.DEBUG);
@@ -314,7 +314,7 @@ config.loadCfg((err, cfg) =>
 
                     for (var i = 0; i < runVotes.length; i++)
                     {
-                        if (runVotes[i].demo_name == demo.demo_info.filename)
+                        if (runVotes[i].demo == demo)
                         {
                             voteExists = true;
                             runVotes[i].users = users;
@@ -322,7 +322,7 @@ config.loadCfg((err, cfg) =>
                     }
                     if (!voteExists)
                     {
-                        var vote = { demo_name: demo.demo_info.filename, users: users };
+                        var vote = { demo: demo, users: users };
                         runVotes.push(vote);
                     }
                     Bot.say(`@${chatter.username} set next map '${demo.player_info.name} on ${demo.demo_info.mapname} as ${demo.record_info.class == 4 ? 'demoman' : 'soldier'} (${utils.msToTimeStamp(demo.record_info.duration * 1000)})'!`);

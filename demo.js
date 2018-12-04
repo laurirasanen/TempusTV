@@ -160,7 +160,7 @@ function startDemo(index)
         // Commands used to control the demo playback
         // rcon ttv_* commands will trigger events in rcon.js
         var commands = [
-            { tick: 33, commands: `fog_override 1; fog_enable 0; rcon ttv_demo_load; demo_gototick ${demos[index].record_info.demo_start_tick - startPadding}; demo_setendtick ${demos[index].record_info.demo_end_tick + endPadding + 66}` },
+            { tick: 33, commands: `sensitivity 0; m_yaw 0; m_pitch 0; unbindall; fog_override 1; fog_enable 0; rcon ttv_demo_load; demo_gototick ${demos[index].record_info.demo_start_tick - startPadding}; demo_setendtick ${demos[index].record_info.demo_end_tick + endPadding + 66}` },
             { tick: demos[index].record_info.demo_start_tick - startPadding, commands: `exec ttv_spec_player; spec_mode 4; demo_resume; volume 0.05; rcon ttv_run_start` },
             { tick: demos[index].record_info.demo_start_tick - (startPadding / 4) * 3, commands: `rcon ttv_run_start_timer` },
             { tick: demos[index].record_info.demo_start_tick, commands: `exec ttv_spec_player; spec_mode 4; rcon ttv_run_start_actual` }, //in case player dead before start_tick
@@ -475,7 +475,9 @@ function playVoted(peek = false)
     var target = -1;
     for (var i = 0; i < demos.length; i++)
     {
-        if (demos[i].demo_info.filename === runVotes[most].demo_name)
+        // Compare demo objects instead of only the filename,
+        // in case there are multiple records on the same demo file
+        if (demos[i] === runVotes[most].demo)
             target = i;
     }
     if (target != -1)
