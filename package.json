@@ -11,6 +11,7 @@
     "chokidar": "^2.0.4",
     "express": "^4.16.3",
     "fuzzy-matching": "^0.4.3",
+    "lodash": "^4.17.11",
     "node-cmd": "^3.0.0",
     "obs-websocket-js": "^1.2.0",
     "rcon": "^1.0.3",
