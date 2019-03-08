@@ -323,7 +323,10 @@ function init()
 
         if (cfg.tv.cleanOldDemos)
         {
-            setTimeout(cleanUp, 55 * 1000);
+            if (cfg.tv.preDownload)
+                cleanUp();
+            else
+                setTimeout(cleanUp, 55 * 1000);
         }
     });    
 }
