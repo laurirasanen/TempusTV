@@ -91,14 +91,7 @@ function load()
 
         if (!cfg.tv.preDownload)
         {
-            demo.getDemos();
-            if (cfg.tv.cleanOldDemos)
-            {
-                setTimeout(() =>
-                {
-                    cleanUp();
-                }, 60 * 1000);
-            }            
+            demo.getDemos();        
         }            
     });
 
@@ -205,17 +198,7 @@ function loadAll()
             }  
 
             getMap(0);
-        }
-        config.loadCfg((err, cfg) =>
-        {
-            if (err) return;
-
-            if (cfg.tv.cleanOldDemos)
-            {
-                cleanUp();
-            }
-        });
-        
+        }        
     }, 60 * 1000);
 }
 
@@ -334,7 +317,14 @@ function init()
         // FIXME
         // use a callback instead of guessing how long it takes to load TF2 and tempus api stuff
         if (cfg.tv.autoStart)
+        {
             setTimeout(start, 60 * 1000);
+        }            
+
+        if (cfg.tv.cleanOldDemos)
+        {
+            cleanUp();
+        }
     });    
 }
 
