@@ -121,7 +121,7 @@ function loadCfg(cb)
             if (err.code == 'ENOENT')
             {
                 log.printLn(`[CONFIG] config.json doesn't exist, using sample config!`);
-                fs.readFile(sampleConfig, (err, data))
+                fs.readFile(sampleConfig, (err, data) =>
                 {
                     if (err)
                         return cb(err, null);
@@ -136,12 +136,12 @@ function loadCfg(cb)
                         {
                             log.printLn('[CONFIG] Error parsing config', log.severity.ERROR);
                             log.printLnNoStamp(JSON.stringify(jsonErr), log.severity.DEBUG);
-                            return cb(jsonErr, null)
+                            return cb(jsonErr, null);
                         }
                         log.printLn('[CONFIG] sample_config.json loaded!');
                         return cb(null, cfg);
                     }
-                }
+                });
             }
             else
                 return cb(err, null);
@@ -158,7 +158,7 @@ function loadCfg(cb)
             {
                 log.printLn('[CONFIG] Error parsing config', log.severity.ERROR);
                 log.printLnNoStamp(jsonErr, log.severity.DEBUG);
-                return cb(jsonErr, null)
+                return cb(jsonErr, null);
             }
             log.printLn('[CONFIG] config.json loaded!');
             return cb(null, cfg);

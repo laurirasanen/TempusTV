@@ -94,7 +94,10 @@ function load()
             demo.getDemos();
             if (cfg.tv.cleanOldDemos)
             {
-                cleanUp();
+                setTimeout(() =>
+                {
+                    cleanUp();
+                }, 60 * 1000);
             }            
         }            
     });
@@ -230,7 +233,7 @@ function cleanUp()
             files.forEach(file =>
             {
                 if (!file.includes('.dem'))
-                    continue;
+                    return;                  
 
                 var included = false;
                 for (var i = 0; i < demos.length; i++)

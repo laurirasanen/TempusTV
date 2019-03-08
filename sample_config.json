@@ -55,7 +55,8 @@
 	"tv":{
 		"autoStart": true,
 		"preDownload": false,
-		"rebootOnException": false
+		"rebootOnException": false,
+		"cleanOldDemos": true
 	},
 	"log":{
 		"severity": 2
