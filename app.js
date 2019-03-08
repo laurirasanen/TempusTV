@@ -90,7 +90,13 @@ function load()
         server.listen(cfg.overlay.port);
 
         if (!cfg.tv.preDownload)
+        {
             demo.getDemos();
+            if (cfg.tv.cleanOldDemos)
+            {
+                cleanUp();
+            }            
+        }            
     });
 
     startTF2();
@@ -197,7 +203,59 @@ function loadAll()
 
             getMap(0);
         }
+        config.loadCfg((err, cfg) =>
+        {
+            if (err) return;
+
+            if (cfg.tv.cleanOldDemos)
+            {
+                cleanUp();
+            }
+        });
+        
     }, 60 * 1000);
+}
+
+function cleanUp()
+{
+    fs.readdir(tfPath, (err, files) =>
+    {
+        if (err)
+        {
+            log.printLn(`[FS] Couldn't read directory ${__dirname}`, log.severity.WARN);
+            log.error(err);
+        }
+        else
+        {
+            files.forEach(file =>
+            {
+                if (!file.includes('.dem'))
+                    continue;
+
+                var included = false;
+                for (var i = 0; i < demos.length; i++)
+                {
+                    if (demos[i].demo_info.filename === file)
+                        included = true;
+                }
+                if (!included)
+                {
+                    fs.unlink(`${tfPath}/${file}`, (err) =>
+                    {
+                        if (err)
+                        {
+                            log.printLn(`[FS] Couldn't unlink old demo ${file}`, log.severity.WARN);
+                            log.error(err);
+                        }
+                        else
+                        {
+                            log.printLn(`[FS] Unlinked old demo ${file}`, log.severity.INFO);
+                        }
+                    });
+                }
+            });
+        }        
+    });
 }
 
 function getDemoFile(index)
