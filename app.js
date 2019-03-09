@@ -175,7 +175,6 @@ function stop()
     app_loaded = false;
     obs.instance.disconnect();
     rcon.instance().disconnect();
-    utils.cleanUp();
 }
 
 function loadAll()
@@ -215,14 +214,18 @@ function cleanUp()
         {
             files.forEach(file =>
             {
-                if (!file.includes('.dem'))
+                if (!file.includes('.dem') && !file.includes('.vdm'))
                     return;                  
 
                 var included = false;
                 for (var i = 0; i < demos.length; i++)
                 {
-                    if (demos[i].demo_info.filename === file)
+                    console.log(`${file.includes(demos[i].demo_info.filename)}: ${file} : ${demos[i].demo_info.filename}`);
+                    if (file.includes(demos[i].demo_info.filename))
+                    {
                         included = true;
+                        break;
+                    }                    
                 }
                 if (!included)
                 {
