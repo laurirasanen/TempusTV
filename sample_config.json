@@ -2,6 +2,7 @@
 	"twitch":{
 		"enable": false,
 		"username": "BotMcBotty",
+		"client_id": "xxx",
 		"oauth": "oauth:xxxx",
 		"channels": [
 			"tempusrecords"

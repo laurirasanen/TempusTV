@@ -17,7 +17,7 @@ function reboot()
     exec('"C:\\Windows\\System32\\cmd.exe" /k shutdown /f /r /t 0', null, { shell: true }, function (err, data)
     {
         if (err)
-            console.log(err)
+            console.log(err);
     });
 
 }
@@ -32,7 +32,7 @@ function startTF2()
     exec(launchCmd, null, { shell: true }, function (err, data)
     {
         if (err)
-            console.log(err)
+            console.log(err);
     });
 }
 
@@ -79,68 +79,76 @@ config.loadCfg((err, cfg) =>
                     Bot.say('!skip is not available right now.');
                     return;
                 }
-
-                https.get('https://api.twitch.tv/kraken/streams/tempusrecords?client_id=lamx3d5c94c0736y99sjh7niskaxvz', (res) =>
+                cfg.loadCfg((cfg, err) =>
                 {
-                    log.printLn(res, log.severity.DEBUG);
-                    var str = '';
-                    res.on('data', (chunk) =>
+                    if (err)
                     {
-                        str += chunk;
-                    })
-                        .on('end', () =>
+                        log.error(err);
+                        return;
+                    }
+
+                    https.get(`https://api.twitch.tv/kraken/streams/tempusrecords?client_id=${cfg.twitch.client_id}`, (res) =>
+                    {
+                        log.printLn(res, log.severity.DEBUG);
+                        var str = '';
+                        res.on('data', (chunk) =>
                         {
-                            log.printLn('[TWITCH] response from api.twitch.tv', log.severity.INFO);
-                            var data = {};
-                            try
+                            str += chunk;
+                        })
+                            .on('end', () =>
                             {
-                                data = JSON.parse(str);
-                            }
-                            catch (err)
-                            {
-                                log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
-                                Bot.say('!skip is not available right now.');
-                                return;
-                            }
-                            //log.printLn('data: ' + JSON.stringify(data), log.severity.DEBUG);
+                                log.printLn('[TWITCH] response from api.twitch.tv', log.severity.INFO);
+                                var data = {};
+                                try
+                                {
+                                    data = JSON.parse(str);
+                                }
+                                catch (err)
+                                {
+                                    log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
+                                    Bot.say('!skip is not available right now.');
+                                    return;
+                                }
+                                //log.printLn('data: ' + JSON.stringify(data), log.severity.DEBUG);
 
-                            if (!data || !data.stream || !data.stream.viewers)
-                            {
-                                Bot.say('!skip is not available right now.');
-                                return;
-                            }
+                                if (!data || !data.stream || !data.stream.viewers)
+                                {
+                                    Bot.say('!skip is not available right now.');
+                                    return;
+                                }
 
-                            log.printLn('[TWITCH] Received skip_request from twitch chat!', log.severity.INFO);
+                                log.printLn('[TWITCH] Received skip_request from twitch chat!', log.severity.INFO);
 
-                            var already = false;
+                                var already = false;
 
-                            if (!userSkips.includes(chatter.username))
-                                userSkips.push(chatter.username);
-                            else
-                                already = true;
-
-                            var votes = userSkips.length;
-                            var required = Math.ceil(data.stream.viewers / 8);
-
-                            var message = '';
-
-                            if (votes >= required)
-                            {
-                                if (already)
-                                    message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}. Skipping run!`;
+                                if (!userSkips.includes(chatter.username))
+                                    userSkips.push(chatter.username);
                                 else
-                                    message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}. Skipping run!`;
-                                demoC.skip();
-                            }
-                            else
-                            {
-                                if (already)
-                                    message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}.`;
+                                    already = true;
+
+                                var votes = userSkips.length;
+                                var required = Math.ceil(data.stream.viewers / 8);
+
+                                var message = '';
+
+                                if (votes >= required)
+                                {
+                                    if (already)
+                                        message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}. Skipping run!`;
+                                    else
+                                        message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}. Skipping run!`;
+                                    demoC.skip();
+                                }
                                 else
-                                    message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}.`;
-                            }
-                            Bot.say(message);
-                        });
+                                {
+                                    if (already)
+                                        message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}.`;
+                                    else
+                                        message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}.`;
+                                }
+                                Bot.say(message);
+                            });
+                    });
                 });
             }
             if (chatter.message.startsWith('!vote ') || chatter.message.startsWith('!nom '))
@@ -394,7 +402,7 @@ config.loadCfg((err, cfg) =>
                                 var authStr = mapInfo.authors[0].name;
                                 for (var i = 1; i < mapInfo.authors.length; i++)
                                 {
-                                    authStr += `, ${mapInfo.authors[i].name}`
+                                    authStr += `, ${mapInfo.authors[i].name}`;
                                 }
                                 Bot.say(`Map: ${mapInfo.name}  Authors: ${authStr}  Tier: Soldier: ${mapInfo.tiers.soldier} Demoman: ${mapInfo.tiers.demoman}  Download: https://tempus.xyz/maps/${mapInfo.name}`);
                             }
@@ -494,7 +502,7 @@ config.loadCfg((err, cfg) =>
         for (var i = 0; i < connections.length; i++)
             Bot.join(connections[i].name);
 
-        instance = function () { return Bot };
+        instance = function () { return Bot; };
         module.exports.instance = instance;
     }
 });
