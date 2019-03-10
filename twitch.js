@@ -79,7 +79,7 @@ config.loadCfg((err, cfg) =>
                     Bot.say('!skip is not available right now.');
                     return;
                 }
-                cfg.loadCfg((cfg, err) =>
+                config.loadCfg((cfg, err) =>
                 {
                     if (err)
                     {
