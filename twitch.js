@@ -73,13 +73,12 @@ config.loadCfg((err, cfg) =>
 
             if (chatter.message === '!skip' || chatter.message === '!rtv')
             {
-                log.printLn('app_running: ' + app_running, log.severity.DEBUG);
                 if (!app_running)
                 {
                     Bot.say('!skip is not available right now.');
                     return;
                 }
-                config.loadCfg((cfg, err) =>
+                config.loadCfg((err, cfg) =>
                 {
                     if (err)
                     {
@@ -89,65 +88,63 @@ config.loadCfg((err, cfg) =>
 
                     https.get(`https://api.twitch.tv/kraken/streams/tempusrecords?client_id=${cfg.twitch.client_id}`, (res) =>
                     {
-                        log.printLn(res, log.severity.DEBUG);
                         var str = '';
                         res.on('data', (chunk) =>
                         {
                             str += chunk;
                         })
-                            .on('end', () =>
+                        .on('end', () =>
+                        {
+                            log.printLn('[TWITCH] response from api.twitch.tv', log.severity.INFO);
+                            var data = {};
+                            try
                             {
-                                log.printLn('[TWITCH] response from api.twitch.tv', log.severity.INFO);
-                                var data = {};
-                                try
-                                {
-                                    data = JSON.parse(str);
-                                }
-                                catch (err)
-                                {
-                                    log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
-                                    Bot.say('!skip is not available right now.');
-                                    return;
-                                }
-                                //log.printLn('data: ' + JSON.stringify(data), log.severity.DEBUG);
+                                data = JSON.parse(str);
+                            }
+                            catch (err)
+                            {
+                                log.printLnNoStamp(JSON.stringify(err), log.severity.DEBUG);
+                                Bot.say('!skip is not available right now.');
+                                return;
+                            }
 
-                                if (!data || !data.stream || !data.stream.viewers)
-                                {
-                                    Bot.say('!skip is not available right now.');
-                                    return;
-                                }
+                            if (!data || !data.stream || !data.stream.viewers)
+                            {
+                                Bot.say('!skip is not available right now.');
+                                return;
+                            }
 
-                                log.printLn('[TWITCH] Received skip_request from twitch chat!', log.severity.INFO);
+                            log.printLn('[TWITCH] Received skip_request from twitch chat!', log.severity.INFO);
 
-                                var already = false;
+                            var already = false;
 
-                                if (!userSkips.includes(chatter.username))
-                                    userSkips.push(chatter.username);
+                            if (!userSkips.includes(chatter.username))
+                                userSkips.push(chatter.username);
+                            else
+                                already = true;
+
+                            var votes = userSkips.length;
+                            var required = Math.ceil(data.stream.viewers / 8);
+
+                            var message = '';
+
+                            if (votes >= required)
+                            {
+                                if (already)
+                                    message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}. Skipping run!`;
                                 else
-                                    already = true;
-
-                                var votes = userSkips.length;
-                                var required = Math.ceil(data.stream.viewers / 8);
-
-                                var message = '';
-
-                                if (votes >= required)
-                                {
-                                    if (already)
-                                        message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}. Skipping run!`;
-                                    else
-                                        message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}. Skipping run!`;
-                                    demoC.skip();
-                                }
+                                    message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}. Skipping run!`;
+                                demoC.skip();
+                            }
+                            else
+                            {
+                                if (already)
+                                    message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}.`;
                                 else
-                                {
-                                    if (already)
-                                        message = `@${chatter.username} you've already voted to skip! Total votes ${votes}/${required}.`;
-                                    else
-                                        message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}.`;
-                                }
-                                Bot.say(message);
-                            });
+                                    message = `${chatter.username} voted to skip the current run. Total votes ${votes}/${required}.`;
+                            }
+                            Bot.say(message);
+                        });
                     });
                 });
             }

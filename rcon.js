@@ -93,7 +93,7 @@ function init()
         catch (err)
         {
             log.printLn('[RCON] Socket closed!', log.severity.ERROR);
-            log.printLnNoStamp(err, log.severity.DEBUG)
+            log.printLnNoStamp(err, log.severity.DEBUG);
 
             restartTF2();
         }
@@ -132,6 +132,7 @@ var srv = net.createServer(function (sock)
             log.printLn('[DEMO] LOADED', log.severity.INFO);
             overlay.drawLoadingStatus('Fast forwarding to run');
             demo_loaded = true;
+            if (demos[currentDemo] === undefined) demo.skip();
             runStartTimeout = 5000 + demos[currentDemo].record_info.demo_start_tick / 25;
             setTimeout((uuid) =>
             {
