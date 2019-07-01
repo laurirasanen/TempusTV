@@ -220,7 +220,6 @@ function cleanUp()
                 var included = false;
                 for (var i = 0; i < demos.length; i++)
                 {
-                    console.log(`${file.includes(demos[i].demo_info.filename)}: ${file} : ${demos[i].demo_info.filename}`);
                     if (file.includes(demos[i].demo_info.filename))
                     {
                         included = true;
