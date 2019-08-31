@@ -371,7 +371,7 @@ config.loadCfg((err, cfg) =>
                     current = demos[currentDemo].record_info.duration * 1000;
                 Bot.say(`@${chatter.username} run time: ${utils.msToTimeStamp(current)}/${utils.msToTimeStamp(demos[currentDemo].record_info.duration * 1000)}`);
             }
-            if (chatter.message === '!map' || chatter.message === '!mi')
+            if (chatter.message === '!map')
             {
                 //Do we need to log this?
                 //log.printLn(`[TWITCH] ${chatter.username} used !nextrun, message: ${chatter.message}`, log.severity.DEBUG); 
